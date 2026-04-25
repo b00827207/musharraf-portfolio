@@ -15,6 +15,7 @@ export type Vital = {
 };
 
 export type CaseFile = {
+  experienceType: 'professional' | 'project';
   domain: 'ACQUISITION' | 'CONVERSION' | 'RETENTION' | 'PRICING';
   symptom: string;
   caseNumber: string;
@@ -41,6 +42,9 @@ export type CaseFile = {
 
   // Optional: link to the deployed strategy platform
   externalUrl?: string;
+
+  // Professional cases only — timeline of milestones
+  timeline?: { month: string; label: string; detail: string }[];
 };
 
 export const cases: CaseFile[] = [
@@ -48,12 +52,13 @@ export const cases: CaseFile[] = [
   // 001 · CRIO.DO — B2B revenue engine (Conversion)
   // ============================================================
   {
+    experienceType: 'professional',
     domain: 'CONVERSION',
     symptom: 'Your B2B pipeline is leaking conversion across 124+ active accounts.',
     caseNumber: '001',
     slug: 'crio-revenue-engine',
     patient: 'Crio.Do',
-    patientMeta: 'India · 2024–2025 · EdTech (Series A)',
+    patientMeta: 'India · 2024–2025 · EdTech (Series A) · Owned',
     category: 'GROWTH',
 
     presenting:
@@ -88,12 +93,22 @@ export const cases: CaseFile[] = [
       'New-Associate Onboarding Curriculum',
     ],
     stack: ['Sheets', 'CRM', 'Pipeline Analytics', 'Internal Dashboards'],
+
+    timeline: [
+      { month: 'M1', label: 'INTAKE', detail: 'Inherited 124+ active accounts. Diagnosed 20.7% cycle inefficiency.' },
+      { month: 'M2', label: 'INSTRUMENT', detail: 'Built KPI tracking framework from zero. Began weekly leadership readouts.' },
+      { month: 'M3', label: 'REDESIGN', detail: 'Revised pitch sequencing. Briefed cross-functional team on workflow.' },
+      { month: 'M4', label: 'INTERIM LEAD', detail: '3-month interim tenure begins. Took over 6-person team.' },
+      { month: 'M5', label: 'ONBOARD', detail: 'Onboarded 5+ new associates with structured curriculum. Ramp-up −18%.' },
+      { month: 'M6', label: 'EXIT', detail: '₹4.2M revenue delivered. Conv 28.6% (+12pp). Cycle 9.2d. SLA 100%.' },
+    ],
   },
 
   // ============================================================
   // 002 · MARSELIA — Air cargo vertical integration (Pricing)
   // ============================================================
   {
+    experienceType: 'project',
     domain: 'PRICING',
     symptom: 'You are surrendering 38–42% of gross cargo margin to ACMI counterparties.',
     caseNumber: '002',
@@ -143,6 +158,7 @@ export const cases: CaseFile[] = [
   // 003 · BVLGARI — Corpo Architettura launch (Acquisition)
   // ============================================================
   {
+    experienceType: 'project',
     domain: 'ACQUISITION',
     symptom: 'A $52.6B luxury jewelry market has no maison occupying the body-architecture position.',
     caseNumber: '003',
@@ -192,12 +208,13 @@ export const cases: CaseFile[] = [
   // 004 · KNR TRADERS — Operational systems (Retention)
   // ============================================================
   {
+    experienceType: 'professional',
     domain: 'RETENTION',
     symptom: 'Your operations are not the bottleneck. Your routing is.',
     caseNumber: '004',
     slug: 'knr-operational-grid',
     patient: 'KNR Traders',
-    patientMeta: 'India · 2023–2024 · Events & Brand Activations',
+    patientMeta: 'India · 2023–2024 · Events & Brand Activations · Owned',
     category: 'OPERATIONS',
 
     presenting:
@@ -232,12 +249,22 @@ export const cases: CaseFile[] = [
       'Billing Automation System',
     ],
     stack: ['Sheets', 'Custom CRM', 'WhatsApp Business', 'Vendor Portals'],
+
+    timeline: [
+      { month: 'M0', label: 'BASELINE', detail: 'Joined to coordinate 70+ flagship activations. Vendor failures across catering, logistics, equipment.' },
+      { month: 'M3', label: 'ZONING', detail: 'Implemented 8-zone rotational staffing model. +50% retail ops efficiency.' },
+      { month: 'M6', label: 'NEGOTIATE', detail: 'Vendor renegotiations: 25% cost savings across catering, logistics, equipment partners.' },
+      { month: 'M9', label: 'AUTOMATE', detail: '100% billing automation deployed. Client experience score +45%.' },
+      { month: 'M12', label: 'INFLECTION', detail: 'Repeat client growth +30%. New client acquisition +40%. 7.2× growth.' },
+      { month: 'M18', label: 'EXIT', detail: '11× business growth. 92% event success rate. ₹2M+ workstreams under management.' },
+    ],
   },
 
   // ============================================================
   // 005 · COMTESSE DU BARRY — 360 Trade Marketing (Conversion)
   // ============================================================
   {
+    experienceType: 'project',
     domain: 'CONVERSION',
     symptom: '45% of revenue lands in December alone. Your model cannot fund itself the rest of the year.',
     caseNumber: '005',

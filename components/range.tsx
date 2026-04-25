@@ -67,13 +67,13 @@ const RANGE = [
 
 export function Range() {
   return (
-    <section id="range" className="relative py-24 md:py-36 bg-paper-warm/50 border-y border-paper-edge">
+    <section id="range" className="relative py-24 md:py-36">
       <div
         className="absolute right-5 md:right-10 top-8 md:top-12 font-display font-light section-num pointer-events-none select-none leading-none"
         style={{ fontSize: 'clamp(8rem, 18vw, 18rem)' }}
         aria-hidden
       >
-        03
+        04
       </div>
 
       <div className="max-w-[1380px] mx-auto px-5 md:px-10 relative">

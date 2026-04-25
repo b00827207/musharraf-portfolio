@@ -11,7 +11,7 @@ export function About() {
         style={{ fontSize: 'clamp(8rem, 18vw, 18rem)' }}
         aria-hidden
       >
-        04
+        05
       </div>
 
       <div className="max-w-[1380px] mx-auto px-5 md:px-10 relative">

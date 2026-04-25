@@ -4,6 +4,7 @@ import type { CaseFile } from '@/lib/data';
 import Link from 'next/link';
 import { Counter } from './counter';
 import { DashCard } from './dash-card';
+import { ProDash } from './pro-dash';
 import { Reveal, SplitReveal } from './reveal';
 import { Nav } from './nav';
 import { Footer } from './footer';
@@ -123,7 +124,11 @@ export function CaseDetail({ c }: { c: CaseFile }) {
               <span className="w-8 h-px bg-terra" />
               <span>Intelligence brief</span>
             </div>
-            <DashCard slug={c.slug} />
+            {c.experienceType === 'professional' ? (
+              <ProDash slug={c.slug} />
+            ) : (
+              <DashCard slug={c.slug} />
+            )}
           </section>
         </Reveal>
 
