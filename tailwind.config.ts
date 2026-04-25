@@ -39,7 +39,7 @@ const config: Config = {
       fontFamily: {
         display: ['var(--font-fraunces)', 'serif'],
         mono: ['var(--font-jetbrains)', 'ui-monospace', 'monospace'],
-        sans: ['var(--font-geist)', 'system-ui', 'sans-serif'],
+        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
       },
       fontSize: {
         'mega': ['clamp(3rem, 12vw, 14rem)', { lineHeight: '0.88', letterSpacing: '-0.04em' }],
