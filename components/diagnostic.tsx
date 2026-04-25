@@ -7,6 +7,7 @@ import { EKG } from './ekg';
 import { Typewriter } from './typewriter';
 import { Counter } from './counter';
 import { useSound } from './sound';
+import { Dashboard } from './dashboard';
 
 // Group cases by domain — sometimes one domain has multiple cases
 const casesByDomain = profile.domains.map((d) => ({
@@ -306,129 +307,154 @@ function DiagnosisPanel({
   currentIdx: number;
 }) {
   return (
-    <article className="grid md:grid-cols-12 gap-6 md:gap-10">
-      {/* LEFT COLUMN — Diagnosis text */}
-      <div className="md:col-span-8 space-y-10">
-        {/* Header strip */}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-micro uppercase">
-          <span className="text-vital flex items-center gap-2">
-            <span className="status-dot" />
-            DIAGNOSIS · LOADED
-          </span>
-          <span className="text-bone-deep">/</span>
-          <span className="text-bone-dim">CASE FILE {c.caseNumber}</span>
-          <span className="text-bone-deep">/</span>
-          <span className="text-bone-dim">{c.duration}</span>
-          {matchedCount > 1 && (
-            <>
-              <span className="text-bone-deep">/</span>
-              <span className="text-bone-dim">
-                {currentIdx + 1} OF {matchedCount} IN DOMAIN
-              </span>
-            </>
-          )}
-          <button
-            onClick={onReset}
-            className="ml-auto text-bone-deep hover:text-bone transition-colors"
-            aria-label="Reset diagnostic"
+    <div className="space-y-12">
+      <article className="grid md:grid-cols-12 gap-6 md:gap-10">
+        {/* LEFT COLUMN — Diagnosis text */}
+        <div className="md:col-span-8 space-y-10">
+          {/* Header strip */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-micro uppercase">
+            <span className="text-vital flex items-center gap-2">
+              <span className="status-dot" />
+              DIAGNOSIS · LOADED
+            </span>
+            <span className="text-bone-deep">/</span>
+            <span className="text-bone-dim">CASE FILE {c.caseNumber}</span>
+            <span className="text-bone-deep">/</span>
+            <span className="text-bone-dim">{c.duration}</span>
+            {matchedCount > 1 && (
+              <>
+                <span className="text-bone-deep">/</span>
+                <span className="text-bone-dim">
+                  {currentIdx + 1} OF {matchedCount} IN DOMAIN
+                </span>
+              </>
+            )}
+            <button
+              onClick={onReset}
+              className="ml-auto text-bone-deep hover:text-bone transition-colors"
+              aria-label="Reset diagnostic"
+            >
+              ← RESET
+            </button>
+          </div>
+
+          {/* Diagnosis line — typewriter reveal */}
+          <h2 className="font-display text-diagnosis font-light text-bone leading-[1.05]">
+            <Typewriter text={c.symptom} speed={20} cursor={false} />
+          </h2>
+
+          {/* Patient meta */}
+          <div className="border-l border-vital pl-6 py-1 animate-fade-up" style={{ animationDelay: '500ms', animationFillMode: 'both', opacity: 0 }}>
+            <div className="font-mono text-micro uppercase text-bone-deep mb-1.5">
+              PATIENT
+            </div>
+            <div className="font-display text-lead text-bone leading-tight">
+              {c.patient}
+            </div>
+            <div className="font-mono text-tiny uppercase text-bone-dim mt-1">
+              {c.patientMeta}
+            </div>
+          </div>
+
+          {/* Clinical notes */}
+          <div className="space-y-8 animate-fade-up" style={{ animationDelay: '700ms', animationFillMode: 'both', opacity: 0 }}>
+            <ClinicalNote label="PRESENTING" body={c.presenting} />
+            <ClinicalNote label="INTERVENTION" body={c.intervention} />
+            <ClinicalNote label="OUTCOME" body={c.outcome} accent />
+          </div>
+        </div>
+
+        {/* RIGHT COLUMN — Vitals */}
+        <aside className="md:col-span-4 space-y-4">
+          <div className="font-mono text-eyebrow uppercase text-bone-deep">
+            VITALS
+          </div>
+
+          <div className="space-y-3">
+            {c.vitals.map((v, i) => (
+              <div
+                key={v.label}
+                className="bracket relative border border-bone-fade/40 bg-ink-900/30 px-5 py-5 animate-fade-up"
+                style={{
+                  animationDelay: `${800 + i * 200}ms`,
+                  animationFillMode: 'both',
+                  opacity: 0,
+                }}
+              >
+                <span className="bl" />
+                <span className="br" />
+                <div className="font-mono text-micro uppercase text-bone-deep mb-2">
+                  {v.label}
+                </div>
+                <div className="flex items-baseline justify-between gap-3">
+                  <div className="font-display text-[2.4rem] md:text-[2.8rem] leading-none text-vital tracking-[-0.02em]">
+                    <Counter value={v.value} delay={1100 + i * 200} duration={1000} />
+                  </div>
+                  <TrendGlyph trend={v.trend} />
+                </div>
+                {v.delta && (
+                  <div className="mt-2 font-mono text-micro uppercase text-bone-dim">
+                    {v.delta}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {/* BMAD chart */}
+          <div
+            className="border-t border-bone-fade/40 pt-6 mt-8 space-y-4 animate-fade-up"
+            style={{
+              animationDelay: '1500ms',
+              animationFillMode: 'both',
+              opacity: 0,
+            }}
           >
-            ← RESET
-          </button>
-        </div>
-
-        {/* Diagnosis line — typewriter reveal */}
-        <h2 className="font-display text-diagnosis font-light text-bone leading-[1.05]">
-          <Typewriter text={c.symptom} speed={20} cursor={false} />
-        </h2>
-
-        {/* Patient meta */}
-        <div className="border-l border-vital pl-6 py-1 animate-fade-up" style={{ animationDelay: '500ms', animationFillMode: 'both', opacity: 0 }}>
-          <div className="font-mono text-micro uppercase text-bone-deep mb-1.5">
-            PATIENT
+            <div className="font-mono text-eyebrow uppercase text-bone-deep">
+              CHART · BMAD
+            </div>
+            <BMADRow label="BUILD" body={c.build} />
+            <BMADRow label="MEASURE" body={c.measure} />
+            <BMADRow label="ANALYZE" body={c.analyze} />
+            <BMADRow label="DEPLOY" body={c.deploy} />
           </div>
-          <div className="font-display text-lead text-bone leading-tight">
-            {c.patient}
-          </div>
-          <div className="font-mono text-tiny uppercase text-bone-dim mt-1">
-            {c.patientMeta}
-          </div>
-        </div>
+        </aside>
+      </article>
 
-        {/* Clinical notes */}
-        <div className="space-y-8 animate-fade-up" style={{ animationDelay: '700ms', animationFillMode: 'both', opacity: 0 }}>
-          <ClinicalNote label="PRESENTING" body={c.presenting} />
-          <ClinicalNote label="INTERVENTION" body={c.intervention} />
-          <ClinicalNote label="OUTCOME" body={c.outcome} accent />
+      {/* DASHBOARD — full-width visual readout, custom per case */}
+      <div
+        className="animate-fade-up"
+        style={{
+          animationDelay: '1100ms',
+          animationFillMode: 'both',
+          opacity: 0,
+        }}
+      >
+        <div className="font-mono text-eyebrow uppercase text-bone-deep mb-4 flex items-center gap-3">
+          <span className="w-6 h-px bg-bone-fade" />
+          <span>READOUT · LIVE INSTRUMENT</span>
         </div>
-
-        {/* Deep link */}
-        <div className="pt-4 animate-fade-up" style={{ animationDelay: '900ms', animationFillMode: 'both', opacity: 0 }}>
-          <Link
-            href={`/projects/${c.slug}`}
-            className="inline-flex items-center gap-3 font-mono text-tiny uppercase tracking-[0.18em] text-vital border border-vital/40 px-5 py-3 hover:bg-vital hover:text-ink-950 transition-colors group"
-          >
-            <span>OPEN FULL CASE FILE</span>
-            <span className="transition-transform group-hover:translate-x-1">→</span>
-          </Link>
-        </div>
+        <Dashboard slug={c.slug} />
       </div>
 
-      {/* RIGHT COLUMN — Vitals */}
-      <aside className="md:col-span-4 space-y-4">
-        <div className="font-mono text-eyebrow uppercase text-bone-deep">
-          VITALS
-        </div>
-
-        <div className="space-y-3">
-          {c.vitals.map((v, i) => (
-            <div
-              key={v.label}
-              className="bracket relative border border-bone-fade/40 bg-ink-900/30 px-5 py-5 animate-fade-up"
-              style={{
-                animationDelay: `${800 + i * 200}ms`,
-                animationFillMode: 'both',
-                opacity: 0,
-              }}
-            >
-              <span className="bl" />
-              <span className="br" />
-              <div className="font-mono text-micro uppercase text-bone-deep mb-2">
-                {v.label}
-              </div>
-              <div className="flex items-baseline justify-between gap-3">
-                <div className="font-display text-[2.4rem] md:text-[2.8rem] leading-none text-vital tracking-[-0.02em]">
-                  <Counter value={v.value} delay={1100 + i * 200} duration={1000} />
-                </div>
-                <TrendGlyph trend={v.trend} />
-              </div>
-              {v.delta && (
-                <div className="mt-2 font-mono text-micro uppercase text-bone-dim">
-                  {v.delta}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-
-        {/* BMAD chart */}
-        <div
-          className="border-t border-bone-fade/40 pt-6 mt-8 space-y-4 animate-fade-up"
-          style={{
-            animationDelay: '1500ms',
-            animationFillMode: 'both',
-            opacity: 0,
-          }}
+      {/* Deep link */}
+      <div
+        className="animate-fade-up"
+        style={{
+          animationDelay: '1300ms',
+          animationFillMode: 'both',
+          opacity: 0,
+        }}
+      >
+        <Link
+          href={`/projects/${c.slug}`}
+          className="inline-flex items-center gap-3 font-mono text-tiny uppercase tracking-[0.18em] text-vital border border-vital/40 px-5 py-3 hover:bg-vital hover:text-ink-950 transition-colors group"
         >
-          <div className="font-mono text-eyebrow uppercase text-bone-deep">
-            CHART · BMAD
-          </div>
-          <BMADRow label="BUILD" body={c.build} />
-          <BMADRow label="MEASURE" body={c.measure} />
-          <BMADRow label="ANALYZE" body={c.analyze} />
-          <BMADRow label="DEPLOY" body={c.deploy} />
-        </div>
-      </aside>
-    </article>
+          <span>OPEN FULL CASE FILE</span>
+          <span className="transition-transform group-hover:translate-x-1">→</span>
+        </Link>
+      </div>
+    </div>
   );
 }
 

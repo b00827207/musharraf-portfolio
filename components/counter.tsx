@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 
-// Parse "+12pp", "₹4.2M", "5 mo", "+210bps", "70%", "11×", "+18%", "8/10", "Q3"
-function parseValue(value: string): { num: number; prefix: string; suffix: string } | null {
+type Parsed = { num: number; prefix: string; suffix: string };
+
+function parseValue(value: string): Parsed | null {
   const match = value.match(/^([^\d.-]*)([\d,.]+)(.*)$/);
   if (!match) return null;
   const num = parseFloat(match[2].replace(/,/g, ''));
@@ -13,7 +14,7 @@ function parseValue(value: string): { num: number; prefix: string; suffix: strin
 
 export function Counter({
   value,
-  duration = 900,
+  duration = 1100,
   delay = 0,
   className = '',
 }: {
@@ -22,8 +23,10 @@ export function Counter({
   delay?: number;
   className?: string;
 }) {
-  const parsed = parseValue(value);
-  const [display, setDisplay] = useState(parsed ? `${parsed.prefix}0${parsed.suffix}` : value);
+  const parsed = useMemo(() => parseValue(value), [value]);
+  const [display, setDisplay] = useState<string>(() =>
+    parsed ? `${parsed.prefix}0${parsed.suffix}` : value
+  );
 
   useEffect(() => {
     if (!parsed) {
@@ -32,34 +35,39 @@ export function Counter({
     }
 
     let raf = 0;
-    let start = 0;
-    let started = false;
+    let startTs = 0;
     const target = parsed.num;
-    // Decimals — preserve precision
     const decimals = (parsed.num.toString().split('.')[1] || '').length;
 
     const tick = (ts: number) => {
-      if (!started) {
-        start = ts;
-        started = true;
-      }
-      const elapsed = ts - start;
+      if (startTs === 0) startTs = ts;
+      const elapsed = ts - startTs;
+
       if (elapsed < delay) {
         raf = requestAnimationFrame(tick);
         return;
       }
+
       const t = Math.min(1, (elapsed - delay) / duration);
-      // ease-out cubic
       const eased = 1 - Math.pow(1 - t, 3);
       const cur = target * eased;
-      const formatted = decimals > 0 ? cur.toFixed(decimals) : Math.round(cur).toString();
+
+      const formatted =
+        decimals > 0 ? cur.toFixed(decimals) : Math.round(cur).toString();
       setDisplay(`${parsed.prefix}${formatted}${parsed.suffix}`);
-      if (t < 1) raf = requestAnimationFrame(tick);
+
+      if (t < 1) {
+        raf = requestAnimationFrame(tick);
+      } else {
+        const finalFormatted =
+          decimals > 0 ? target.toFixed(decimals) : target.toString();
+        setDisplay(`${parsed.prefix}${finalFormatted}${parsed.suffix}`);
+      }
     };
 
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [value, duration, delay, parsed]);
+  }, [parsed, value, duration, delay]);
 
   return <span className={`tabular ${className}`}>{display}</span>;
 }

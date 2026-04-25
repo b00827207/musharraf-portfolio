@@ -5,6 +5,7 @@ import { type CaseFile } from '@/lib/data';
 import { Counter } from './counter';
 import { Typewriter } from './typewriter';
 import { EKG } from './ekg';
+import { Dashboard } from './dashboard';
 
 export function CaseFilePage({
   caseFile: c,
@@ -102,6 +103,15 @@ export function CaseFilePage({
               </div>
             ))}
           </div>
+        </section>
+
+        {/* DASHBOARD — case-specific live readout */}
+        <section className="border-b border-bone-fade/40 py-16">
+          <div className="font-mono text-eyebrow uppercase text-bone-deep mb-6 flex items-center gap-3">
+            <span className="w-6 h-px bg-bone-fade" />
+            <span>READOUT · LIVE INSTRUMENT</span>
+          </div>
+          <Dashboard slug={c.slug} />
         </section>
 
         {/* CLINICAL NOTES */}
