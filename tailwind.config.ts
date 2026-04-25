@@ -1,79 +1,70 @@
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
-  content: [
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-  ],
+  content: ['./app/**/*.{ts,tsx}', './components/**/*.{ts,tsx}'],
   theme: {
     extend: {
       colors: {
-        // Obsidian foundation
+        // Near-black operating room background
         ink: {
-          950: '#070809',
-          900: '#0B0D0F',
-          800: '#111418',
-          700: '#1A1E24',
-          600: '#252B33',
-          500: '#3A424D',
+          950: '#08090A',
+          900: '#0E1011',
+          800: '#16191B',
+          700: '#22262A',
+          600: '#3A3F44',
         },
-        // Signal — electric cyan, the "data" color
-        signal: {
-          DEFAULT: '#5BE9E9',
-          dim: '#3FB8B8',
-          glow: '#7FFFEF',
-        },
-        // Warmth — amber, the "human" color
-        ember: {
-          DEFAULT: '#E8A14B',
-          deep: '#B87020',
-          pale: '#F5D199',
-        },
-        // Bone — warm off-white
+        // Bone — primary text
         bone: {
-          DEFAULT: '#E8E4DC',
-          dim: '#A8A49A',
-          deep: '#6B6862',
+          DEFAULT: '#EAE6DD',
+          dim: '#A09B91',
+          deep: '#6E6A62',
+          fade: '#3D3A35',
         },
+        // The single accent — vital green. Only on EKG and active states.
+        vital: {
+          DEFAULT: '#7CFFB7',
+          dim: 'rgba(124, 255, 183, 0.5)',
+          glow: 'rgba(124, 255, 183, 0.18)',
+        },
+        // Critical — only used to signal a "presenting symptom"
+        critical: '#FF6B6B',
       },
       fontFamily: {
-        display: ['var(--font-fraunces)', 'serif'],
-        mono: ['var(--font-jetbrains)', 'ui-monospace', 'monospace'],
-        sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-fraunces)', 'Georgia', 'serif'],
+        mono: ['var(--font-mono)', 'ui-monospace', 'monospace'],
       },
       fontSize: {
-        'mega': ['clamp(3rem, 12vw, 14rem)', { lineHeight: '0.88', letterSpacing: '-0.04em' }],
-        'huge': ['clamp(2.5rem, 8vw, 8rem)', { lineHeight: '0.92', letterSpacing: '-0.035em' }],
-        'large': ['clamp(2rem, 5vw, 4.5rem)', { lineHeight: '1', letterSpacing: '-0.025em' }],
+        // Fluid scale
+        'micro': ['10px', { lineHeight: '1.4', letterSpacing: '0.18em' }],
+        'tiny': ['11px', { lineHeight: '1.5', letterSpacing: '0.15em' }],
+        'eyebrow': ['12px', { lineHeight: '1.5', letterSpacing: '0.22em' }],
+        'lead': ['clamp(1.5rem, 2.4vw, 2.4rem)', { lineHeight: '1.25', letterSpacing: '-0.01em' }],
+        'diagnosis': ['clamp(2.4rem, 5.2vw, 5.6rem)', { lineHeight: '1.02', letterSpacing: '-0.035em' }],
+        'mega': ['clamp(3rem, 7vw, 7rem)', { lineHeight: '0.95', letterSpacing: '-0.04em' }],
       },
       animation: {
-        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'scan': 'scan 3s linear infinite',
-        'flicker': 'flicker 0.15s infinite',
-        'drift': 'drift 20s linear infinite',
-        'shimmer': 'shimmer 2.5s linear infinite',
+        'pulse-slow': 'pulseSlow 4s ease-in-out infinite',
+        'cursor': 'cursor 1.05s steps(1) infinite',
+        'fade-up': 'fadeUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards',
+        'count-tick': 'countTick 0.4s ease-out',
       },
       keyframes: {
-        scan: {
-          '0%': { transform: 'translateY(-100%)' },
-          '100%': { transform: 'translateY(100vh)' },
+        pulseSlow: {
+          '0%, 100%': { opacity: '0.4' },
+          '50%': { opacity: '1' },
         },
-        flicker: {
-          '0%, 100%': { opacity: '1' },
-          '50%': { opacity: '0.97' },
+        cursor: {
+          '0%, 50%': { opacity: '1' },
+          '50.01%, 100%': { opacity: '0' },
         },
-        drift: {
-          '0%': { transform: 'translate(0, 0)' },
-          '100%': { transform: 'translate(-50%, -50%)' },
+        fadeUp: {
+          '0%': { opacity: '0', transform: 'translateY(8px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
         },
-        shimmer: {
-          '0%': { backgroundPosition: '-200% 0' },
-          '100%': { backgroundPosition: '200% 0' },
+        countTick: {
+          '0%': { transform: 'translateY(-4px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
         },
-      },
-      backgroundImage: {
-        'grid-fine': 'linear-gradient(to right, rgba(91, 233, 233, 0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(91, 233, 233, 0.04) 1px, transparent 1px)',
-        'noise': "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3CfeColorMatrix values='0 0 0 0 0.36 0 0 0 0 0.91 0 0 0 0 0.91 0 0 0 0.4 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E\")",
       },
     },
   },

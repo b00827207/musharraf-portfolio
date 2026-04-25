@@ -1,9 +1,8 @@
 import type { Metadata } from 'next';
-import { Fraunces, JetBrains_Mono, Inter } from 'next/font/google';
+import { Fraunces, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
-import { SmoothScroll } from '@/components/smooth-scroll';
-import { Cursor } from '@/components/cursor';
-import { Nav } from '@/components/nav';
+import { SoundProvider } from '@/components/sound';
+import { MonitorBar } from '@/components/monitor-bar';
 
 const fraunces = Fraunces({
   subsets: ['latin'],
@@ -12,22 +11,22 @@ const fraunces = Fraunces({
   display: 'swap',
 });
 
-const jbmono = JetBrains_Mono({
+const mono = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-mono',
   display: 'swap',
 });
 
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-sans',
-  display: 'swap',
-});
-
 export const metadata: Metadata = {
-  title: 'Musharraf Shaik — The Architecture of Intent',
+  title: 'DIAGNOSTIC — Musharraf Shaik',
   description:
-    'Data-driven B2B marketing strategist. ESSEC MiM. Engineering revenue through Build · Measure · Analyze · Deploy.',
+    'A diagnostic interface for B2B revenue problems. Click a presenting symptom; the relevant case file loads.',
+  openGraph: {
+    title: 'DIAGNOSTIC — Musharraf Shaik',
+    description:
+      'A diagnostic interface for B2B revenue problems. Click a presenting symptom; the relevant case file loads.',
+    type: 'website',
+  },
 };
 
 export default function RootLayout({
@@ -38,14 +37,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${jbmono.variable} ${inter.variable}`}
+      className={`${fraunces.variable} ${mono.variable}`}
     >
-      <body className="bg-ink-950 text-bone-100 antialiased font-sans">
-        <SmoothScroll>
-          <Cursor />
-          <Nav />
+      <body className="font-mono">
+        <SoundProvider>
+          <MonitorBar />
           {children}
-        </SmoothScroll>
+        </SoundProvider>
       </body>
     </html>
   );

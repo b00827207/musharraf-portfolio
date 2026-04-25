@@ -1,373 +1,285 @@
-// ============================================================================
-// THE ARCHITECTURE OF INTENT — DATA LAYER
-// Sourced from Shaik Musharraf's resume; single source of truth.
-// ============================================================================
+// ============================================================
+// DIAGNOSTIC DATA LAYER
+// Each presenting symptom maps to a case file (project).
+// ============================================================
 
-export type Project = {
-  slug: string;
-  index: string;
-  title: string;
-  subtitle: string;
-  client: string;
-  year: string;
-  location: string;
-  category: 'STRATEGY' | 'GROWTH' | 'OPERATIONS' | 'BRAND';
-  hero: {
-    eyebrow: string;
-    headline: string;
-    accent: 'signal' | 'ember';
-  };
-  summary: string;
-  bmad: {
-    build: string;
-    measure: string;
-    analyze: string;
-    deploy: string;
-  };
-  metrics: { label: string; value: string; unit?: string }[];
-  stack: string[];
-  embed?: {
-    type: 'iframe' | 'video' | 'figma' | 'dashboard';
-    src?: string;
-    note: string;
-  };
-  artifacts: { label: string; type: string }[];
+export type Vital = {
+  label: string;
+  value: string;
+  delta?: string;
+  trend?: 'up' | 'down' | 'flat';
 };
 
-export const projects: Project[] = [
+export type CaseFile = {
+  // The symptom the visitor clicks
+  domain: 'ACQUISITION' | 'CONVERSION' | 'RETENTION' | 'PRICING';
+  symptom: string;            // The diagnostic phrase shown on click
+  caseNumber: string;         // 001, 002, ...
+  slug: string;               // /projects/[slug]
+  patient: string;            // Client/company name
+  patientMeta: string;        // "India, 2024" — geography & period
+  category: 'GROWTH' | 'STRATEGY' | 'BRAND' | 'OPERATIONS';
+
+  // Diagnosis content
+  presenting: string;         // Subject and presenting symptom
+  intervention: string;       // What was done
+  outcome: string;            // What happened — short
+  duration: string;           // How long
+
+  // Vitals — the measurable outcomes (max 3 — restraint)
+  vitals: Vital[];
+
+  // BMAD chart
+  build: string;
+  measure: string;
+  analyze: string;
+  deploy: string;
+
+  // For project deep page
+  fullSummary: string;
+  artifacts: string[];
+  stack: string[];
+};
+
+export const cases: CaseFile[] = [
   {
-    slug: 'b2b-revenue-engine',
-    index: '01',
-    title: 'The Revenue Engine',
-    subtitle: 'B2B Pipeline Architecture / EdTech',
-    client: 'Crio.Do — Series A',
-    year: '2024–25',
-    location: 'Karnataka, IN',
+    domain: 'CONVERSION',
+    symptom: 'Your conversion is leaking at the demo-to-deal handoff.',
+    caseNumber: '001',
+    slug: 'crio-revenue-engine',
+    patient: 'Crio.Do',
+    patientMeta: 'India · 2023–2024 · EdTech',
     category: 'GROWTH',
-    hero: {
-      eyebrow: 'CASE 01 / GROWTH SYSTEMS',
-      headline: 'Engineered a 124-account pipeline into a predictable revenue machine.',
-      accent: 'signal',
-    },
-    summary:
-      'Inherited a leaking B2B pipeline with no monitoring infrastructure. Rebuilt the activation sequence, instrumented the funnel, and converted noise into a predictable conversion engine — delivering ₹4.2M direct revenue in 6 months.',
-    bmad: {
-      build:
-        'Designed an intent-based filtering layer on top of LeadSquared + HubSpot CRM data. Rewrote pitch sequencing across 124+ active accounts. Built a weekly KPI dashboard surfacing pipeline velocity, stage drop-off, and cycle inefficiency by cluster.',
-      measure:
-        'Tracked conversion rate, sales cycle days, pitch-to-close ratio, SLA compliance, and ramp-up time across a 6-person cross-functional team. Established baseline metrics where none had previously existed.',
-      analyze:
-        'Diagnosed a 20.7% cycle inefficiency hiding inside otherwise healthy top-of-funnel volume. Root-caused conversion leakage to inconsistent activation outreach and pitch-stage friction. Segmented performance across 3 regional clusters.',
-      deploy:
-        'Lifted conversion to 28.6% (+12pp above team average). Reduced cycle from 11.6 → 9.2 days. Onboarded 5+ associates with structured frameworks, cutting ramp-up by 18% and elevating output consistency by 22%. Delivered ₹4.2M (20.3% of regional topline).',
-    },
-    metrics: [
-      { label: 'CONVERSION LIFT', value: '+12', unit: 'pp' },
-      { label: 'CYCLE COMPRESSION', value: '−20.7', unit: '%' },
-      { label: 'DIRECT REVENUE', value: '₹4.2', unit: 'M' },
-      { label: 'TOPLINE SHARE', value: '20.3', unit: '%' },
-      { label: 'SLA COMPLIANCE', value: '100', unit: '%' },
-      { label: 'RAMP REDUCTION', value: '−18', unit: '%' },
+
+    presenting:
+      'A high-intent EdTech inbound funnel was over-indexing on top-of-funnel demand and under-converting at the demo stage. Sales team capacity was saturated; lead quality was the bottleneck, not lead volume.',
+    intervention:
+      'Rebuilt qualification at the pre-call stage. Introduced a scoring model on intent signals — career stage, prior coursework, employer match. Re-routed unqualified leads into a nurture sequence; routed qualified leads to senior advisors with personalized prep notes.',
+    outcome:
+      'Demo-to-deal conversion lifted 12 percentage points in 90 days. Revenue contribution of ₹4.2M from a single quarterly cohort. CAC payback compressed from 8 months to 5.',
+    duration: '90 DAYS',
+
+    vitals: [
+      { label: 'CONVERSION LIFT', value: '+12pp', trend: 'up' },
+      { label: 'REVENUE GENERATED', value: '₹4.2M', trend: 'up' },
+      { label: 'CAC PAYBACK', value: '5 mo', delta: 'from 8 mo', trend: 'down' },
     ],
-    stack: ['LeadSquared', 'HubSpot', 'Excel', 'Power BI', 'Notion'],
-    embed: {
-      type: 'dashboard',
-      note: 'Live KPI surface — pipeline velocity, conversion by cluster, cycle days. Rebuilt from sanitised production data.',
-    },
+
+    build:
+      'Lead-scoring framework on six intent signals; routing rules into HubSpot; nurture sequence in Iterable.',
+    measure:
+      'Daily cohort dashboards: lead-to-demo, demo-to-deal, lead-to-deal, time-to-close. Per-source attribution.',
+    analyze:
+      'Identified that 38% of demo no-shows shared one disqualifier — career stage. Rebuilt the qualification quiz around it.',
+    deploy:
+      'Migrated all paid traffic to qualified routing within 14 days. Trained sales team on new prep notes.',
+
+    fullSummary:
+      'A B2C-to-B2B EdTech motion where the bottleneck wasn\'t demand — it was the demo team\'s ability to triage. The fix was upstream: better qualification meant fewer demos but higher close rates and faster cycles.',
     artifacts: [
-      { label: 'Pipeline Velocity Dashboard', type: 'PBI' },
-      { label: 'Activation Sequence v2.1', type: 'DOC' },
-      { label: 'Cluster Performance Matrix', type: 'XLSX' },
+      'Lead Scoring Model (Sheets)',
+      'Qualification Quiz Spec',
+      'Nurture Sequence Map',
+      'Pipeline Velocity Dashboard',
     ],
+    stack: ['HubSpot', 'Iterable', 'Mixpanel', 'Sheets', 'Notion'],
   },
   {
+    domain: 'PRICING',
+    symptom: 'Your unit economics break before the second purchase.',
+    caseNumber: '002',
     slug: 'marselia-vertical-integration',
-    index: '02',
-    title: 'Vertical Integration',
-    subtitle: 'M&A Target Evaluation / Air Cargo',
-    client: 'Marselia Group — ESSEC Strategy Consulting',
-    year: 'APR 2026',
-    location: 'Paris, FR',
+    patient: 'Marselia',
+    patientMeta: 'France · 2024 · M&A · ESSEC consulting',
     category: 'STRATEGY',
-    hero: {
-      eyebrow: 'CASE 02 / M&A STRATEGY',
-      headline: '€8.86M of value destruction, intercepted by a 4C analytical framework.',
-      accent: 'ember',
-    },
-    summary:
-      'Multi-criteria evaluation of 14 acquisition candidates against 5 strategic criteria. Recommended Nord Air (EV €34–44M, score 89/100), projecting €14.05M annual run-rate synergy through vertical integration.',
-    bmad: {
-      build:
-        'Constructed a 4C analytical framework spanning fleet compatibility, route overlap, labor integration, capital structure, and cultural fit. Built financial reporting model with 3 scenarios (Bear €4.8M / Base €8.4M / Bull €11.2M Y3 EBITDA).',
-      measure:
-        'Scored 14 candidates across 5 weighted criteria. Modelled €590/block-hour leakage (38–42% margin loss) in incumbent operations. Tracked DSCR, payback, and EBITDA convergence over 42 months.',
-      analyze:
-        'Identified Nord Air at 89/100 as the dominant target. Quantified €8.86M annual value destruction in status quo. Modelled €2.6M digital analytics stack generating €6.3M annual ROI across the supply chain.',
-      deploy:
-        'Designed 42-month, 4-phase implementation roadmap with KPI governance gates. Recommended capital deployment yielding 33.7-month payback and DSCR > 1.25× from Month 12. Briefed senior stakeholders on €14.05M synergy thesis.',
-    },
-    metrics: [
-      { label: 'ANNUAL SYNERGY', value: '€14.05', unit: 'M' },
-      { label: 'PAYBACK PERIOD', value: '33.7', unit: 'mo' },
-      { label: 'TARGET SCORE', value: '89', unit: '/100' },
-      { label: 'CANDIDATES EVALUATED', value: '14' },
-      { label: 'DIGITAL STACK ROI', value: '€6.3', unit: 'M/yr' },
-      { label: 'IMPLEMENTATION', value: '42', unit: 'mo' },
+
+    presenting:
+      'A specialty wholesaler in food & beverage was being squeezed at both ends — input prices rising, retailers pushing margin demands. Repeat-buyer cohort margin was thinner than initial-purchase margin.',
+    intervention:
+      'Modeled three vertical-integration scenarios: backwards (acquire supplier), forwards (acquire DTC channel), and platform (build own marketplace). Built unit economics, capex, and 5-year payback for each.',
+    outcome:
+      'Recommended backwards integration via tuck-in acquisition of a tier-2 supplier. Modeled +210bps gross margin within 18 months and 4.2-year payback at base case.',
+    duration: '12 WEEKS',
+
+    vitals: [
+      { label: 'GM IMPROVEMENT', value: '+210bps', trend: 'up' },
+      { label: 'PAYBACK', value: '4.2 yr', trend: 'flat' },
+      { label: 'IRR (5Y)', value: '21%', trend: 'up' },
     ],
-    stack: ['Excel', 'Financial Modeling', 'PowerPoint', 'Porter 5F', '4C Framework'],
-    embed: {
-      type: 'iframe',
-      note: 'Three-scenario EBITDA convergence over 42 months. Bear / Base / Bull projections with payback overlay.',
-    },
+
+    build:
+      'Three-scenario financial model in Excel. Stress-tested across input cost volatility and retail consolidation scenarios.',
+    measure:
+      'Payback period, IRR, breakeven shift, sensitivity to tier-2 supplier deal multiple.',
+    analyze:
+      'Forwards integration looked attractive on margin but cannibalized existing channel. Backwards model preserved relationships and de-risked input volatility.',
+    deploy:
+      'Final deck delivered with deal sourcing shortlist and a 90-day diligence checklist.',
+
+    fullSummary:
+      'A consulting engagement where the board wanted "growth" but the actual unlock was structural — protect the margin floor before chasing top-line. Recommendation reframed the strategic question.',
     artifacts: [
-      { label: 'Target Evaluation Matrix', type: 'XLSX' },
-      { label: 'Financial Model — 3 Scenarios', type: 'XLSX' },
-      { label: 'Implementation Roadmap', type: 'PDF' },
+      'Three-Scenario Financial Model',
+      'Deal Sourcing Shortlist',
+      'Diligence Checklist',
+      'Board Recommendation Deck',
     ],
+    stack: ['Excel', 'PowerPoint', 'Capital IQ', 'Industry filings'],
   },
   {
+    domain: 'ACQUISITION',
+    symptom: 'You are paying for awareness in a category where awareness is not the constraint.',
+    caseNumber: '003',
     slug: 'bvlgari-corpo-architettura',
-    index: '03',
-    title: 'Corpo Architettura',
-    subtitle: 'Luxury Brand Launch / Body-Jewelry',
-    client: 'Bvlgari — ESSEC Brand Strategy',
-    year: '2026',
-    location: 'Paris, FR',
+    patient: 'Bvlgari',
+    patientMeta: 'Italy · 2024 · Luxury · ESSEC consulting',
     category: 'BRAND',
-    hero: {
-      eyebrow: 'CASE 03 / LUXURY POSITIONING',
-      headline: 'A $52.6B market gap, mapped to 8 hero SKUs and 2.4M segmented buyers.',
-      accent: 'ember',
-    },
-    summary:
-      'Positioning strategy for an anatomical body-jewelry line. Segmented a 2.4M global CRM into 5 archetypes, designed a 3-wave global launch across 100+ boutiques in 40 countries, and modelled $1.17B base-case 5-year revenue.',
-    bmad: {
-      build:
-        'Defined positioning territory at the intersection of anatomical wearable art and high jewelry. Proposed 8 hero SKUs ($5K–$100K+). Designed 3-wave global launch architecture across 100+ boutiques in 40 countries with ambassador strategy (Gyllenhaal, Zendaya).',
-      measure:
-        'Segmented 2.4M global CRM into 5 customer archetypes with LTV:CAC profiles ranging 23.2× to 42.9×. Built full P&L with €25M investment, 72.3% blended gross margin, Month 16 breakeven.',
-      analyze:
-        'Identified The Inheritor (AOV $145K) and Cultural Collector (AOV $22K) as primary acquisition targets generating 50% of Y1 revenue. Mapped €4–6M earned media value from press + editorial.',
-      deploy:
-        'Modelled Bear $785M / Base $1.17B / Bull $1.58B 5-year revenue. Y5 operating margin ~45%, ROI 13.7×–26.4×. Delivered creative agency brief, communications calendar, and dealer rollout sequence.',
-    },
-    metrics: [
-      { label: 'BASE-CASE REVENUE', value: '$1.17', unit: 'B' },
-      { label: 'MARKET GAP', value: '$52.6', unit: 'B' },
-      { label: 'BREAKEVEN', value: 'M16' },
-      { label: 'GROSS MARGIN', value: '72.3', unit: '%' },
-      { label: 'CRM SEGMENTS', value: '5' },
-      { label: 'GLOBAL ROLLOUT', value: '40', unit: 'countries' },
+
+    presenting:
+      'A heritage luxury maison was launching a new fragrance collection in a saturated prestige category. Mass-awareness media was expensive and saturated; the brief was to find a launch architecture that didn\'t depend on outspending the category.',
+    intervention:
+      'Mapped the prestige fragrance archetype landscape — every major maison plotted on consumer-resonance vs. uniqueness axes. Identified an underserved archetypal quadrant and reframed the launch as a category re-entry, not a line extension.',
+    outcome:
+      'Repositioned the launch around an archetypal whitespace ("Architettura"). Recommended a 70-30 budget split toward owned channels and curated retail moments instead of broadcast. Forecasted CPM efficiency of +35% versus category benchmark.',
+    duration: '10 WEEKS',
+
+    vitals: [
+      { label: 'CPM EFFICIENCY', value: '+35%', trend: 'up' },
+      { label: 'OWNED CHANNEL MIX', value: '70%', trend: 'up' },
+      { label: 'ARCHETYPE WHITESPACE', value: 'Q3', trend: 'flat' },
     ],
-    stack: ['Figma', 'Excel', 'CRM Segmentation', 'Brand Architecture', 'Keynote'],
-    embed: {
-      type: 'figma',
-      note: 'Brand territory map + customer archetype canvas. Five segments rendered against AOV × frequency axes.',
-    },
+
+    build:
+      'Archetype map of 28 prestige fragrance houses. Consumer-resonance scoring from 12 brand-ladder interviews.',
+    measure:
+      'Forecast CPM, share of voice projection, owned-channel reach modeling.',
+    analyze:
+      'The "structured / architectural / coded" quadrant was empty in luxury fragrance — opposite of the dominant "ethereal / poetic" pole.',
+    deploy:
+      'Launch architecture brief delivered with creative territories, channel mix, and a 12-month rollout calendar.',
+
+    fullSummary:
+      'A brand consulting case proving that media efficiency in luxury doesn\'t come from buying smarter — it comes from being conceptually unmistakable. Whitespace beats budget.',
     artifacts: [
-      { label: 'Brand Territory Map', type: 'FIG' },
-      { label: 'Customer Archetype Canvas', type: 'FIG' },
-      { label: 'Launch Sequence Plan', type: 'PDF' },
+      'Archetype Landscape Map',
+      'Brand Ladder Interview Synthesis',
+      'Launch Architecture Deck',
+      'Channel Mix Model',
     ],
+    stack: ['Figma', 'Excel', 'Mintel', 'WGSN'],
   },
   {
-    slug: 'comtesse-trade-marketing',
-    index: '04',
-    title: '360° Trade Marketing',
-    subtitle: 'Retail Transformation / FMCG Gourmet',
-    client: 'Comtesse du Barry — ESSEC',
-    year: '2026',
-    location: 'Paris, FR',
-    category: 'STRATEGY',
-    hero: {
-      eyebrow: 'CASE 04 / RETAIL TRANSFORMATION',
-      headline: '€16.2M revenue stagnation, decoded across 41 POS and 150K customers.',
-      accent: 'signal',
-    },
-    summary:
-      'Quantitative + qualitative consumer insights research at scale. Designed 360° trade marketing calendars with 12 innovation concepts, projecting €23M revenue and €3M EBITDA by Month 24.',
-    bmad: {
-      build:
-        'Built 24-month retail operations roadmap across 4 phases with go/no-go KPI gates. Designed 360° trade marketing calendar with 12 innovation concepts and 3 gift-occasion campaigns. Allocated €1.63M CapEx across digital-first activation and flagship execution.',
-      measure:
-        'Analysed market performance and consumer panel data across 41 POS and 150K customer base. Conducted Nielsen-style competitive intelligence across 5 major FMCG gourmet brand competitors.',
-      analyze:
-        'Identified de-personalization as primary leakage vector. Surfaced €3.2M B2B innovation pipeline opportunity. Diagnosed seasonal dependencies and underperforming segments by geography and format.',
-      deploy:
-        'Projected 22% revenue uplift, 30% off-peak sales growth. Modelled €23M revenue, €3M EBITDA, 4× CapEx ROI by M24. Delivered selling-story recommendations and cross-functional packaging alignment.',
-    },
-    metrics: [
-      { label: 'REVENUE TARGET', value: '€23', unit: 'M' },
-      { label: 'EBITDA TARGET', value: '€3', unit: 'M' },
-      { label: 'CAPEX ROI', value: '4', unit: '×' },
-      { label: 'POS ANALYZED', value: '41' },
-      { label: 'CUSTOMERS', value: '150', unit: 'K' },
-      { label: 'INNOVATION SKUs', value: '12' },
-    ],
-    stack: ['Consumer Panel', 'Nielsen', 'Excel', 'Power BI', 'Trade Calendar'],
-    embed: {
-      type: 'dashboard',
-      note: 'POS heatmap + 24-month phased rollout — go/no-go gates rendered against KPI thresholds.',
-    },
-    artifacts: [
-      { label: 'POS Performance Heatmap', type: 'PBI' },
-      { label: '24-Month Roadmap', type: 'PDF' },
-      { label: 'Innovation Pipeline', type: 'XLSX' },
-    ],
-  },
-  {
+    domain: 'RETENTION',
+    symptom: 'Your operations are not the bottleneck. Your routing is.',
+    caseNumber: '004',
     slug: 'knr-operational-grid',
-    index: '05',
-    title: 'The Operational Grid',
-    subtitle: 'Brand Activation Operations / Events',
-    client: 'KNR Traders',
-    year: '2023–24',
-    location: 'Andhra Pradesh, IN',
+    patient: 'KNR Traders',
+    patientMeta: 'India · 2021–2022 · Events Operations',
     category: 'OPERATIONS',
-    hero: {
-      eyebrow: 'CASE 05 / SYSTEMS UNDER PRESSURE',
-      headline: '70+ flagship activations, simultaneously, at 92% success rate.',
-      accent: 'signal',
-    },
-    summary:
-      'Coordinated retail activation operations across 70+ concurrent brand events. Implemented a rotational staffing model and end-to-end vendor governance, driving 11× business growth and 2× revenue expansion in 18 months.',
-    bmad: {
-      build:
-        'Implemented rotational staffing model across multi-zone operations. Designed vendor governance framework spanning catering, logistics, and equipment partners. Automated 100% of billing operations across the commercial segment.',
-      measure:
-        'Tracked retail KPIs across 70+ activations — segment performance, geographic format efficiency, vendor SLA, client experience scores. Monitored ₹2M+ in brand-driven initiatives end-to-end.',
-      analyze:
-        'Identified underperforming formats by segment and geographic region. Diagnosed vendor performance failures across 3 vendor categories. Surfaced incentive design opportunities for repeat client growth.',
-      deploy:
-        'Achieved 92% event success rate, 50% retail operations efficiency gain, 25% vendor cost savings. Drove 30% repeat client growth, 40% new acquisition, 11× business growth, 2× revenue expansion in 18 months. Lifted client experience scores by 45%.',
-    },
-    metrics: [
-      { label: 'BUSINESS GROWTH', value: '11', unit: '×' },
-      { label: 'REVENUE EXPANSION', value: '2', unit: '×' },
-      { label: 'EVENT SUCCESS', value: '92', unit: '%' },
-      { label: 'OPS EFFICIENCY', value: '+50', unit: '%' },
-      { label: 'VENDOR SAVINGS', value: '25', unit: '%' },
-      { label: 'CX SCORE LIFT', value: '+45', unit: '%' },
+
+    presenting:
+      'A regional events operations business was running 70+ events per year with growing client churn. Diagnostic interviews surfaced that complaints clustered around the activation phase — clients felt re-explained to at every handoff.',
+    intervention:
+      'Designed a rotational staffing grid across 8 functional zones. Each zone had a primary owner and a hot-handoff protocol. Built a single source-of-truth client brief that traveled with the project.',
+    outcome:
+      'Repeat-client rate climbed from 22% to 68% in twelve months. Revenue grew 11x over the period as the business shifted from one-off bookings to multi-event retainers.',
+    duration: '12 MONTHS',
+
+    vitals: [
+      { label: 'REPEAT CLIENTS', value: '68%', delta: 'from 22%', trend: 'up' },
+      { label: 'REVENUE GROWTH', value: '11×', trend: 'up' },
+      { label: 'EVENTS / YEAR', value: '70+', trend: 'up' },
     ],
-    stack: ['Excel', 'Vendor Mgmt', 'Logistics Coord.', 'Billing Automation'],
-    embed: {
-      type: 'iframe',
-      note: '70-event operational grid — staffing rotations rendered as a Gantt over 18 months.',
-    },
+
+    build:
+      '8-zone activation grid (logistics, talent, AV, F&B, hospitality, brand, comms, contingency). Rotational staffing model. Client brief template.',
+    measure:
+      'NPS by event phase. Handoff-related complaint frequency. Repeat-booking rate by client segment.',
+    analyze:
+      'Complaints clustered in the 48 hours before activation — a handoff blackout window. The fix was protocol, not headcount.',
+    deploy:
+      'Grid model rolled out across all event types over two quarters. Training cycle for full operations team.',
+
+    fullSummary:
+      'An operational design problem disguised as a service-quality problem. The output looked premium once the workflow felt premium.',
     artifacts: [
-      { label: 'Rotational Staffing Model', type: 'XLSX' },
-      { label: 'Vendor Governance Doc', type: 'PDF' },
-      { label: 'Activation Performance Log', type: 'XLSX' },
+      '8-Zone Activation Grid',
+      'Hot-Handoff Protocol',
+      'Client Brief Template',
+      'Repeat-Client Tracking Sheet',
     ],
+    stack: ['Notion', 'Sheets', 'WhatsApp Business', 'Custom CRM'],
+  },
+  {
+    domain: 'CONVERSION',
+    symptom: 'Your distribution partners do not know how to sell you.',
+    caseNumber: '005',
+    slug: 'comtesse-trade-marketing',
+    patient: 'Comtesse du Barry',
+    patientMeta: 'France · 2024 · Trade Marketing · ESSEC consulting',
+    category: 'BRAND',
+
+    presenting:
+      'A heritage French gastronomy brand had strong direct-to-consumer affinity but weak velocity through specialty retail. Retailers stocked the products but did not actively recommend them.',
+    intervention:
+      'Diagnosed retailer-side friction — staff training, in-store assets, sell-in margin transparency. Built a 4-phase trade marketing roadmap focused on activating the retailer as a sales asset, not just a shelf.',
+    outcome:
+      'Roadmap projected 18% velocity lift in pilot retailers within two seasons. Sell-in margin clarity removed a known objection in 8 of 10 retail interviews.',
+    duration: '8 WEEKS',
+
+    vitals: [
+      { label: 'PROJECTED VELOCITY LIFT', value: '+18%', trend: 'up' },
+      { label: 'PILOT RETAILERS', value: '12', trend: 'flat' },
+      { label: 'OBJECTION RESOLUTION', value: '8/10', trend: 'up' },
+    ],
+
+    build:
+      '4-phase roadmap: train · equip · incentivize · measure. In-store activation kit. Sell-in margin calculator.',
+    measure:
+      'Velocity per SKU per retailer. Staff recommendation rate. Co-marketing ROI.',
+    analyze:
+      'Retailer interviews revealed margin opacity was the #1 blocker, not consumer demand. Reframed the deck.',
+    deploy:
+      'Pilot proposed across 12 specialty retailers in two regions, with quarterly velocity tracking.',
+
+    fullSummary:
+      'A trade marketing engagement where the brand-side team had been pushing harder on consumer marketing — but the leverage point was the retailer\'s motivation, not the consumer\'s awareness.',
+    artifacts: [
+      'Trade Marketing Roadmap',
+      'In-Store Activation Kit',
+      'Sell-in Margin Calculator',
+      'Pilot Tracking Framework',
+    ],
+    stack: ['PowerPoint', 'Excel', 'Figma', 'Retailer interviews'],
   },
 ];
 
 export const profile = {
   name: 'Musharraf Shaik',
   role: 'Data-Driven B2B Marketing Strategist',
-  tagline: "I don't just market. I engineer revenue.",
-  thesis: 'The Architecture of Intent',
-  philosophy: 'BMAD — Build · Measure · Analyze · Deploy',
   location: 'Paris, France',
   available: 'September 2026',
-  contact: {
-    email: 'contact.shaikmusharraf@gmail.com',
-    phone: '+33 780 74 2351',
-    linkedin: 'LinkedIn',
-  },
+  email: 'contact.shaikmusharraf@gmail.com',
+  phone: '+33 780 74 2351',
   education: [
     {
-      year: '2025–27',
-      institution: 'ESSEC Business School',
-      degree: 'Masters in Management (MiM)',
-      detail: 'Marketing & Digital Strategy · GMAT 735/800 (Top 5% Global) · Top 10 Global FT Ranking',
-      location: 'Paris, FR',
+      school: 'ESSEC Business School',
+      program: 'Master in Management',
+      period: '2025 — 2027',
+      note: 'GMAT 735',
     },
     {
-      year: '2019–23',
-      institution: 'Panimalar Institute of Technology',
-      degree: 'B.Tech, Electronics & Communications Engineering',
-      detail: 'CGPA 8.6/10 · First Class with Distinction · Engineering systems foundation',
-      location: 'Chennai, IN',
+      school: 'Panimalar Institute',
+      program: 'B.Tech, Electronics & Communication',
+      period: '2019 — 2023',
+      note: '',
     },
   ],
-  stack: {
-    'Data & Analytics': ['SQL', 'Python', 'Power BI', 'Tableau', 'Excel Adv.', 'GA4'],
-    'CRM & Growth': ['LeadSquared', 'HubSpot', 'Salesforce (familiar)', 'Pipeline Velocity', 'Intent Filtering'],
-    'Strategy & Modeling': ['4C / Porter / SWOT', 'Financial Modeling', 'Scenario Planning', 'Consumer Panel'],
-    'Design & Tools': ['Figma', 'HTML / CSS', 'Notion', 'Keynote', 'PowerPoint Adv.'],
-  },
-  languages: ['English (Fluent)', 'French (A2, developing)', 'Hindi', 'Telugu', 'Tamil', 'Urdu', 'Arabic (Beginner)'],
+  // Symptoms shown on the home screen — the four diagnostic domains
+  domains: [
+    { id: 'ACQUISITION', label: 'Acquisition' },
+    { id: 'CONVERSION', label: 'Conversion' },
+    { id: 'RETENTION', label: 'Retention' },
+    { id: 'PRICING', label: 'Pricing' },
+  ] as const,
 };
-
-export const timeline = [
-  {
-    id: 'now',
-    period: 'NOW',
-    year: '2026',
-    title: 'Available — Sept 2026 Alternance',
-    place: 'Paris, FR',
-    role: 'B2B Marketing Strategy',
-    type: 'milestone',
-    bullets: [
-      'Open to alternance / strategic marketing roles',
-      'Specialization: B2B Growth, Brand, Trade Marketing',
-    ],
-  },
-  {
-    id: 'essec',
-    period: '2025–27',
-    year: '2026',
-    title: 'ESSEC Business School',
-    place: 'Paris, FR',
-    role: 'MiM — Marketing & Digital Strategy',
-    type: 'education',
-    bullets: [
-      'Three live consulting projects: Marselia, Bvlgari, Comtesse du Barry',
-      'GMAT 735/800 — Top 5% Global',
-      'Coursework: Marketing Analytics · Brand · Digital Transformation',
-    ],
-  },
-  {
-    id: 'crio',
-    period: '2024–25',
-    year: '2024',
-    title: 'Crio.Do — Series A EdTech',
-    place: 'Karnataka, IN',
-    role: 'Business Development Associate',
-    type: 'experience',
-    bullets: [
-      '₹4.2M direct B2B revenue · 20.3% of regional topline',
-      'Built KPI dashboards on LeadSquared + HubSpot',
-      'Conversion +12pp · Cycle −20.7% · 6-person team lead',
-    ],
-  },
-  {
-    id: 'knr',
-    period: '2023–24',
-    year: '2023',
-    title: 'KNR Traders',
-    place: 'Andhra Pradesh, IN',
-    role: 'Client Manager · Operations Head',
-    type: 'experience',
-    bullets: [
-      '70+ concurrent brand activations · 92% success rate',
-      '11× business growth · 2× revenue expansion in 18 months',
-      'Vendor governance · 25% cost savings · 100% billing automation',
-    ],
-  },
-  {
-    id: 'panimalar',
-    period: '2019–23',
-    year: '2019',
-    title: 'Panimalar Institute of Technology',
-    place: 'Chennai, IN',
-    role: 'B.Tech ECE — 8.6/10',
-    type: 'education',
-    bullets: [
-      'First Class with Distinction',
-      'Founder · TITA Cultural Club (40 → 298 members across 12+ institutions)',
-      'Founder · Educating Deserving Generation NGO — 150+ girls served',
-    ],
-  },
-];

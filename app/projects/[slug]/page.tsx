@@ -1,26 +1,30 @@
 import { notFound } from 'next/navigation';
-import { projects } from '@/lib/data';
-import { ProjectPageClient } from '@/components/project-page-client';
+import { cases } from '@/lib/data';
+import { CaseFilePage } from '@/components/case-file-page';
 
 export async function generateStaticParams() {
-  return projects.map((p) => ({ slug: p.slug }));
+  return cases.map((c) => ({ slug: c.slug }));
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const project = projects.find((p) => p.slug === params.slug);
-  if (!project) return {};
+export async function generateMetadata({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const c = cases.find((x) => x.slug === params.slug);
+  if (!c) return { title: 'Case not found' };
   return {
-    title: `${project.title} — Musharraf Shaik`,
-    description: project.summary,
+    title: `Case File ${c.caseNumber} · ${c.patient} — Musharraf Shaik`,
+    description: c.symptom,
   };
 }
 
 export default function ProjectPage({ params }: { params: { slug: string } }) {
-  const idx = projects.findIndex((p) => p.slug === params.slug);
-  if (idx === -1) notFound();
-
-  const project = projects[idx];
-  const nextProject = projects[(idx + 1) % projects.length];
-
-  return <ProjectPageClient project={project} nextProject={nextProject} />;
+  const idx = cases.findIndex((x) => x.slug === params.slug);
+  if (idx === -1) {
+    notFound();
+  }
+  const c = cases[idx];
+  const next = cases[(idx + 1) % cases.length];
+  return <CaseFilePage caseFile={c} next={next} />;
 }
