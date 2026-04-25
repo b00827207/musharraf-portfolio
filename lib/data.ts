@@ -1,6 +1,10 @@
 // ============================================================
-// DIAGNOSTIC DATA LAYER
-// Each presenting symptom maps to a case file (project).
+// DIAGNOSTIC DATA LAYER · v2
+// Source-of-truth: master resume + 3 deployed strategy platforms
+//   · marselia-strategy.netlify.app (NordAir vertical integration)
+//   · bulgari-corpoarchitettura.netlify.app (Corpo Architettura)
+//   · comtesse-du-barry-stratergy.netlify.app (Trade Marketing)
+// All numbers reconciled against Shaik_Master_.pdf.
 // ============================================================
 
 export type Vital = {
@@ -11,271 +15,281 @@ export type Vital = {
 };
 
 export type CaseFile = {
-  // The symptom the visitor clicks
   domain: 'ACQUISITION' | 'CONVERSION' | 'RETENTION' | 'PRICING';
-  symptom: string;            // The diagnostic phrase shown on click
-  caseNumber: string;         // 001, 002, ...
-  slug: string;               // /projects/[slug]
-  patient: string;            // Client/company name
-  patientMeta: string;        // "India, 2024" — geography & period
+  symptom: string;
+  caseNumber: string;
+  slug: string;
+  patient: string;
+  patientMeta: string;
   category: 'GROWTH' | 'STRATEGY' | 'BRAND' | 'OPERATIONS';
 
-  // Diagnosis content
-  presenting: string;         // Subject and presenting symptom
-  intervention: string;       // What was done
-  outcome: string;            // What happened — short
-  duration: string;           // How long
+  presenting: string;
+  intervention: string;
+  outcome: string;
+  duration: string;
 
-  // Vitals — the measurable outcomes (max 3 — restraint)
   vitals: Vital[];
 
-  // BMAD chart
   build: string;
   measure: string;
   analyze: string;
   deploy: string;
 
-  // For project deep page
   fullSummary: string;
   artifacts: string[];
   stack: string[];
+
+  // Optional: link to the deployed strategy platform
+  externalUrl?: string;
 };
 
 export const cases: CaseFile[] = [
+  // ============================================================
+  // 001 · CRIO.DO — B2B revenue engine (Conversion)
+  // ============================================================
   {
     domain: 'CONVERSION',
-    symptom: 'Your conversion is leaking at the demo-to-deal handoff.',
+    symptom: 'Your B2B pipeline is leaking conversion across 124+ active accounts.',
     caseNumber: '001',
     slug: 'crio-revenue-engine',
     patient: 'Crio.Do',
-    patientMeta: 'India · 2023–2024 · EdTech',
+    patientMeta: 'India · 2024–2025 · EdTech (Series A)',
     category: 'GROWTH',
 
     presenting:
-      'A high-intent EdTech inbound funnel was over-indexing on top-of-funnel demand and under-converting at the demo stage. Sales team capacity was saturated; lead quality was the bottleneck, not lead volume.',
+      'A Series A EdTech B2B pipeline was leaking conversion across 124+ active commercial accounts. Inconsistent activation outreach combined with no monitoring infrastructure left a 20.7% cycle inefficiency invisible to regional leadership. Sales cycle was running 11.6 days; pitch-to-conversion was below team baseline.',
     intervention:
-      'Rebuilt qualification at the pre-call stage. Introduced a scoring model on intent signals — career stage, prior coursework, employer match. Re-routed unqualified leads into a nurture sequence; routed qualified leads to senior advisors with personalized prep notes.',
+      'Independently redesigned pitch sequencing across the funnel and briefed the cross-functional team on the revised workflow. Built an analytical tracking framework from zero — surfacing root-cause cycle inefficiencies. Stood up weekly KPI dashboards for regional leadership during a 3-month interim lead tenure managing a 6-person team.',
     outcome:
-      'Demo-to-deal conversion lifted 12 percentage points in 90 days. Revenue contribution of ₹4.2M from a single quarterly cohort. CAC payback compressed from 8 months to 5.',
-    duration: '90 DAYS',
+      'Conversion rate lifted to 28.6% — +12pp above team average. Sales cycle compressed from 11.6 to 9.2 days (35.4% pitch-to-conversion improvement). ₹4.2M in direct B2B revenue delivered in 6 months — 20.3% of regional topline. New-associate ramp-up cut by 18%, output consistency up 22%, 100% SLA compliance.',
+    duration: '6 MONTHS',
 
     vitals: [
-      { label: 'CONVERSION LIFT', value: '+12pp', trend: 'up' },
-      { label: 'REVENUE GENERATED', value: '₹4.2M', trend: 'up' },
-      { label: 'CAC PAYBACK', value: '5 mo', delta: 'from 8 mo', trend: 'down' },
+      { label: 'CONVERSION LIFT', value: '+12pp', delta: 'team avg → 28.6%', trend: 'up' },
+      { label: 'REVENUE GENERATED', value: '₹4.2M', delta: '20.3% of regional topline', trend: 'up' },
+      { label: 'SALES CYCLE', value: '9.2 days', delta: 'from 11.6 days', trend: 'down' },
     ],
 
     build:
-      'Lead-scoring framework on six intent signals; routing rules into HubSpot; nurture sequence in Iterable.',
+      'Redesigned pitch sequencing across 124+ active accounts. Analytical tracking framework from zero. Weekly KPI dashboards. Structured onboarding curriculum for 5+ new associates.',
     measure:
-      'Daily cohort dashboards: lead-to-demo, demo-to-deal, lead-to-deal, time-to-close. Per-source attribution.',
+      'Conversion rate, sales-cycle days, pitch-to-conversion ratio, regional revenue contribution, SLA compliance, new-hire ramp-up time.',
     analyze:
-      'Identified that 38% of demo no-shows shared one disqualifier — career stage. Rebuilt the qualification quiz around it.',
+      'Identified a 20.7% cycle inefficiency invisible to leadership. Diagnosed pipeline root causes via systematic competitive analysis. Tracked performance trends across 3 regional clusters.',
     deploy:
-      'Migrated all paid traffic to qualified routing within 14 days. Trained sales team on new prep notes.',
+      'Briefed regional leadership weekly during 3-month interim lead tenure. Onboarded 5+ associates with structured training. Achieved 100% SLA compliance during ownership window.',
 
     fullSummary:
-      'A B2C-to-B2B EdTech motion where the bottleneck wasn\'t demand — it was the demo team\'s ability to triage. The fix was upstream: better qualification meant fewer demos but higher close rates and faster cycles.',
+      'A diagnostic-first revenue engineering engagement. The bottleneck wasn\'t demand — it was the absence of an instrumentation layer. Build the dashboard, surface the inefficiency, fix the workflow, brief the team, deliver the revenue.',
     artifacts: [
-      'Lead Scoring Model (Sheets)',
-      'Qualification Quiz Spec',
-      'Nurture Sequence Map',
-      'Pipeline Velocity Dashboard',
+      'KPI Tracking Framework (Sheets)',
+      'Revised Pitch Sequencing Playbook',
+      'Weekly Regional Leadership Dashboard',
+      'New-Associate Onboarding Curriculum',
     ],
-    stack: ['HubSpot', 'Iterable', 'Mixpanel', 'Sheets', 'Notion'],
+    stack: ['Sheets', 'CRM', 'Pipeline Analytics', 'Internal Dashboards'],
   },
+
+  // ============================================================
+  // 002 · MARSELIA — Air cargo vertical integration (Pricing)
+  // ============================================================
   {
     domain: 'PRICING',
-    symptom: 'Your unit economics break before the second purchase.',
+    symptom: 'You are surrendering 38–42% of gross cargo margin to ACMI counterparties.',
     caseNumber: '002',
     slug: 'marselia-vertical-integration',
-    patient: 'Marselia',
-    patientMeta: 'France · 2024 · M&A · ESSEC consulting',
+    patient: 'Marselia Group · Air Cargo Division',
+    patientMeta: 'EU · April 2026 · M&A Strategy · ESSEC consulting',
     category: 'STRATEGY',
 
     presenting:
-      'A specialty wholesaler in food & beverage was being squeezed at both ends — input prices rising, retailers pushing margin demands. Repeat-buyer cohort margin was thinner than initial-purchase margin.',
+      'Marselia\'s air cargo division was structurally surrendering 38–42% of gross cargo margin to ACMI counterparties — €8.86M in annual value destruction. Each block hour cost €1,480 under ACMI versus €890 under owned operations. €14.2M in pharmaceutical contracts up for renewal Q3 2026 now require owned-aircraft SLA guarantees that ACMI cannot deliver.',
     intervention:
-      'Modeled three vertical-integration scenarios: backwards (acquire supplier), forwards (acquire DTC channel), and platform (build own marketplace). Built unit economics, capex, and 5-year payback for each.',
+      'Screened 14 acquisition candidates across 5 strategic criteria. Modeled four strategic options through a multi-criteria weighted matrix. Recommended NordAir Cargo Solutions (Copenhagen, 4× B737-800F, fit score 89/100, EV €34–43M) under a Hybrid Ownership model. Built the proprietary 4C Synergy Framework (Combination · Connection · Customisation · Consolidation) generating €14.05M annual value at full run-rate.',
     outcome:
-      'Recommended backwards integration via tuck-in acquisition of a tier-2 supplier. Modeled +210bps gross margin within 18 months and 4.2-year payback at base case.',
-    duration: '12 WEEKS',
+      '€14.05M projected annual synergy at run-rate. 33.7-month acquisition payback (Base Case) — well within 36-month IC threshold. €8.4M Y3 EBITDA (Base) at 29% margin. DSCR clears 1.25× covenant floor by Month 12, reaches 3.4× by Year 4. Hybrid model returns positive across Bear/Base/Bull scenarios.',
+    duration: '42 MONTHS',
 
     vitals: [
-      { label: 'GM IMPROVEMENT', value: '+210bps', trend: 'up' },
-      { label: 'PAYBACK', value: '4.2 yr', trend: 'flat' },
-      { label: 'IRR (5Y)', value: '21%', trend: 'up' },
+      { label: 'ANNUAL SYNERGY', value: '€14.05M', delta: '4C Framework run-rate', trend: 'up' },
+      { label: 'ACQUISITION PAYBACK', value: '33.7 mo', delta: 'IC threshold: 36 mo', trend: 'down' },
+      { label: 'Y3 EBITDA · BASE', value: '€8.4M', delta: '29% margin', trend: 'up' },
     ],
 
     build:
-      'Three-scenario financial model in Excel. Stress-tested across input cost volatility and retail consolidation scenarios.',
+      'Multi-criteria evaluation matrix across 14 acquisition candidates on 5 strategic criteria. 4C Synergy Framework. 4-phase 42-month implementation programme with embedded IC go/no-go gates. €68.2M total programme CapEx structure.',
     measure:
-      'Payback period, IRR, breakeven shift, sensitivity to tier-2 supplier deal multiple.',
+      'EBITDA accretion across Bear/Base/Bull. DSCR vs 1.25× covenant. Block-hour unit cost. Crew internalisation savings. ACMI dependency ratio. Pharma contract retention rate.',
     analyze:
-      'Forwards integration looked attractive on margin but cannibalized existing channel. Backwards model preserved relationships and de-risked input volatility.',
+      'Identified €590/block hour cost delta (€1,480 ACMI vs €890 owned) compounding to €8.86M annual leakage at 15,000 block hours. Hybrid Option 3 scored 409/500 against Status Quo (278), Partial (307), and Full Fleet (280).',
     deploy:
-      'Final deck delivered with deal sourcing shortlist and a 90-day diligence checklist.',
+      'Recommendation: enter LOI on NordAir within 30 days. Bid ceiling €44M EV. €12M equity + €26.5M acquisition debt + €28.8M aircraft lease finance. Window: 9 months wide before valuation re-rates.',
 
     fullSummary:
-      'A consulting engagement where the board wanted "growth" but the actual unlock was structural — protect the margin floor before chasing top-line. Recommendation reframed the strategic question.',
+      'A vertical-integration M&A engagement built on a margin-archaeology insight: where the value is being surrendered, and to whom. The 4C Framework reframed the acquisition from "cost reduction" to "structural value capture" — making the IC case unambiguous across all three macro scenarios.',
     artifacts: [
-      'Three-Scenario Financial Model',
-      'Deal Sourcing Shortlist',
-      'Diligence Checklist',
-      'Board Recommendation Deck',
+      'Multi-Criteria Strategic Options Matrix',
+      '4C Synergy Framework Model',
+      'Three-Scenario P&L (Bear / Base / Bull)',
+      'NordAir Valuation Football Field',
+      '42-Month Phased Implementation Programme',
+      'Risk Register & Mitigation Architecture',
     ],
     stack: ['Excel', 'PowerPoint', 'Capital IQ', 'Industry filings'],
+    externalUrl: 'https://marselia-strategy.netlify.app/',
   },
+
+  // ============================================================
+  // 003 · BVLGARI — Corpo Architettura launch (Acquisition)
+  // ============================================================
   {
     domain: 'ACQUISITION',
-    symptom: 'You are paying for awareness in a category where awareness is not the constraint.',
+    symptom: 'A $52.6B luxury jewelry market has no maison occupying the body-architecture position.',
     caseNumber: '003',
     slug: 'bvlgari-corpo-architettura',
-    patient: 'Bvlgari',
-    patientMeta: 'Italy · 2024 · Luxury · ESSEC consulting',
+    patient: 'Bvlgari · Corpo Architettura',
+    patientMeta: 'LVMH · March 2026 · Luxury Brand Launch · ESSEC consulting',
     category: 'BRAND',
 
     presenting:
-      'A heritage luxury maison was launching a new fragrance collection in a saturated prestige category. Mass-awareness media was expensive and saturated; the brief was to find a launch architecture that didn\'t depend on outspending the category.',
+      'A $52.6B luxury jewelry market with 8.1% CAGR — and no major maison occupying the architectural body-jewelry positioning. Tiffany\'s Peretti runs $470M/yr, Messika built $360M from zero, Schiaparelli proved viral demand with no fine-jewelry distribution. Bvlgari already owned Tubogas, Viper Links, Roman heritage, 390 boutiques — but no occupation of the category. Richemont\'s jewelry division was outgrowing LVMH W&J by €4.8B.',
     intervention:
-      'Mapped the prestige fragrance archetype landscape — every major maison plotted on consumer-resonance vs. uniqueness axes. Identified an underserved archetypal quadrant and reframed the launch as a category re-entry, not a line extension.',
+      'Designed an 8 hero SKU collection across 4 price tiers ($5K–$100K+) referencing specific anatomical structures (Vertebra Collar, Clavicle Arc, Costa Chain, Scapula Brooch, Metacarpal Cage, Sternum Line, Radius Cuff, Phalange Set). Segmented Bvlgari\'s 2.4M global CRM into 5 customer archetypes with LTV:CAC ranging from 23.2× to 74.2×. Built a 3-wave 18-month rollout across 100+ boutiques in 40 countries. Modelled €25M total investment with three-method valuation triangulation.',
     outcome:
-      'Repositioned the launch around an archetypal whitespace ("Architettura"). Recommended a 70-30 budget split toward owned channels and curated retail moments instead of broadcast. Forecasted CPM efficiency of +35% versus category benchmark.',
-    duration: '10 WEEKS',
+      '$1.17B Base-Case 5Y revenue projection at 19.5× ROI on €25M investment. Y5 operating margin ~45%. Bear $785M (13.7×) / Base $1.17B (19.5×) / Bull $1.58B (26.4×). Month 16 breakeven (Base). Blended GM 72.3% across the 8 hero SKUs.',
+    duration: '18 MONTHS',
 
     vitals: [
-      { label: 'CPM EFFICIENCY', value: '+35%', trend: 'up' },
-      { label: 'OWNED CHANNEL MIX', value: '70%', trend: 'up' },
-      { label: 'ARCHETYPE WHITESPACE', value: 'Q3', trend: 'flat' },
+      { label: '5Y REVENUE · BASE', value: '$1.17B', delta: 'Bear $785M / Bull $1.58B', trend: 'up' },
+      { label: 'ROI ON €25M', value: '19.5×', delta: 'Base case · 5Y', trend: 'up' },
+      { label: 'BLENDED GM', value: '72.3%', delta: '8 hero SKUs', trend: 'up' },
     ],
 
     build:
-      'Archetype map of 28 prestige fragrance houses. Consumer-resonance scoring from 12 brand-ladder interviews.',
+      '8 hero SKUs across 4 price tiers. 5 customer archetypes from 2.4M CRM segmentation. Corpo Studio retrofit programme (10 flagships @ €150K). 3-wave 18-month launch. Patent filing programme: EU + US + China.',
     measure:
-      'Forecast CPM, share of voice projection, owned-channel reach modeling.',
+      'Boutique sell-through, AOV by archetype, LTV:CAC by segment, earned-media equivalent value, scarcity-tier waitlist depth, Y3 operating margin, Cartier competitive response probability.',
     analyze:
-      'The "structured / architectural / coded" quadrant was empty in luxury fragrance — opposite of the dominant "ethereal / poetic" pole.',
+      '"Body Architecture Jewelry" had zero search volume — uncontested category language. Cartier scored highest competitive threat at Month 6 (~70%) but Bvlgari\'s moat reaches 80% via filed patents and Corpo Studio infrastructure. Asymmetric upside: even worst-case 3-risk scenario returns 8.2×.',
     deploy:
-      'Launch architecture brief delivered with creative territories, channel mix, and a 12-month rollout calendar.',
+      'Wave 0 (M3–4): VIP private preview. Wave 1 (M5–7): Tubogas launch. Wave 2 (M8–12): gender-fluid + Gyllenhaal campaign. Wave 3 (M13–18): High Jewelry — Vertebra Collar & Costa Chain. Zendaya red-carpet activation pre-loaded.',
 
     fullSummary:
-      'A brand consulting case proving that media efficiency in luxury doesn\'t come from buying smarter — it comes from being conceptually unmistakable. Whitespace beats budget.',
+      'A brand consulting engagement that started as positioning and became a category-creation thesis. The data argument was the one that closed it: not "Bvlgari should build body jewelry" but "this category will exist within 24 months — Bvlgari either defines it or follows it."',
     artifacts: [
-      'Archetype Landscape Map',
-      'Brand Ladder Interview Synthesis',
-      'Launch Architecture Deck',
-      'Channel Mix Model',
+      'Corpo Architettura White Paper',
+      '8 Hero SKU Architecture',
+      '5-Archetype Segmentation Model',
+      'Three-Scenario Financial Build',
+      'Competitive Moat Architecture',
+      'Risk Register × 10 Primary Risks',
     ],
-    stack: ['Figma', 'Excel', 'Mintel', 'WGSN'],
+    stack: ['Figma', 'Excel', 'Bvlgari CRM (analysis)', 'Bain · McKinsey · Euromonitor'],
+    externalUrl: 'https://bulgari-corpoarchitettura.netlify.app/',
   },
+
+  // ============================================================
+  // 004 · KNR TRADERS — Operational systems (Retention)
+  // ============================================================
   {
     domain: 'RETENTION',
     symptom: 'Your operations are not the bottleneck. Your routing is.',
     caseNumber: '004',
     slug: 'knr-operational-grid',
     patient: 'KNR Traders',
-    patientMeta: 'India · 2021–2022 · Events Operations',
+    patientMeta: 'India · 2023–2024 · Events & Brand Activations',
     category: 'OPERATIONS',
 
     presenting:
-      'A regional events operations business was running 70+ events per year with growing client churn. Diagnostic interviews surfaced that complaints clustered around the activation phase — clients felt re-explained to at every handoff.',
+      'A regional events operations business was running 70+ flagship brand activations simultaneously across multiple geographic zones. Logistics, staffing agencies, and vendor partners were fragmenting under competing deadlines. Vendor performance failures across catering, logistics, and equipment partners were eroding client confidence. Underperforming formats by segment were invisible to leadership.',
     intervention:
-      'Designed a rotational staffing grid across 8 functional zones. Each zone had a primary owner and a hot-handoff protocol. Built a single source-of-truth client brief that traveled with the project.',
+      'Implemented a rotational staffing model across 8 functional zones. Negotiated cost controls with vendors and briefed client stakeholders on corrective action recommendations. Designed an incentive coordination plan tied to KPI performance trends across 70+ activations. Automated 100% of billing and end-to-end project monitoring for ₹2M+ in concurrent brand-driven workstreams.',
     outcome:
-      'Repeat-client rate climbed from 22% to 68% in twelve months. Revenue grew 11x over the period as the business shifted from one-off bookings to multi-event retainers.',
-    duration: '12 MONTHS',
+      '92% event success rate across 70+ activations. 50% retail operations efficiency gain. 25% vendor cost savings. 2× revenue expansion in 18 months. 30% repeat-client growth. 40% new-client acquisition. 11× overall business growth over the operating period. 45% client experience score improvement.',
+    duration: '18 MONTHS',
 
     vitals: [
-      { label: 'REPEAT CLIENTS', value: '68%', delta: 'from 22%', trend: 'up' },
-      { label: 'REVENUE GROWTH', value: '11×', trend: 'up' },
-      { label: 'EVENTS / YEAR', value: '70+', trend: 'up' },
+      { label: 'BUSINESS GROWTH', value: '11×', delta: '18-month operating period', trend: 'up' },
+      { label: 'EVENT SUCCESS RATE', value: '92%', delta: '70+ activations', trend: 'up' },
+      { label: 'VENDOR COST SAVINGS', value: '25%', delta: 'negotiated controls', trend: 'down' },
     ],
 
     build:
-      '8-zone activation grid (logistics, talent, AV, F&B, hospitality, brand, comms, contingency). Rotational staffing model. Client brief template.',
+      '8-zone rotational staffing model. End-to-end project monitoring across concurrent workstreams. Vendor cost-control protocols. Incentive coordination plan. 100% billing automation.',
     measure:
-      'NPS by event phase. Handoff-related complaint frequency. Repeat-booking rate by client segment.',
+      'Event success rate, repeat-client growth, new-client acquisition, vendor cost variance, client experience score, retail operations efficiency.',
     analyze:
-      'Complaints clustered in the 48 hours before activation — a handoff blackout window. The fix was protocol, not headcount.',
+      'Performance trends surfaced underperforming formats by segment and geographic region. Vendor performance failures clustered in catering, logistics, and equipment under concurrent deadlines.',
     deploy:
-      'Grid model rolled out across all event types over two quarters. Training cycle for full operations team.',
+      'Rotational staffing rolled across all event types. Vendor renegotiations across catering, logistics, equipment partners. Billing automation deployed across 100% of accounts.',
 
     fullSummary:
-      'An operational design problem disguised as a service-quality problem. The output looked premium once the workflow felt premium.',
+      'An operational design problem disguised as a service-quality problem. The output looked premium once the workflow felt premium. The 8-zone routing replaced ad-hoc handoffs — efficiency followed structure.',
     artifacts: [
       '8-Zone Activation Grid',
-      'Hot-Handoff Protocol',
-      'Client Brief Template',
-      'Repeat-Client Tracking Sheet',
+      'Vendor Cost Control Protocol',
+      'Incentive Coordination Plan',
+      'Billing Automation System',
     ],
-    stack: ['Notion', 'Sheets', 'WhatsApp Business', 'Custom CRM'],
+    stack: ['Sheets', 'Custom CRM', 'WhatsApp Business', 'Vendor Portals'],
   },
+
+  // ============================================================
+  // 005 · COMTESSE DU BARRY — 360 Trade Marketing (Conversion)
+  // ============================================================
   {
     domain: 'CONVERSION',
-    symptom: 'Your distribution partners do not know how to sell you.',
+    symptom: '45% of revenue lands in December alone. Your model cannot fund itself the rest of the year.',
     caseNumber: '005',
     slug: 'comtesse-trade-marketing',
     patient: 'Comtesse du Barry',
-    patientMeta: 'France · 2024 · Trade Marketing · ESSEC consulting',
+    patientMeta: 'France · 2026 · Trade Marketing · ESSEC consulting',
     category: 'BRAND',
 
     presenting:
-      'A heritage French gastronomy brand had strong direct-to-consumer affinity but weak velocity through specialty retail. Retailers stocked the products but did not actively recommend them.',
+      'A 117-year-old French gourmet maison (€16.2M revenue, owned by Maïsadour) at structural inflection: chronic negative EBITDA, 45% revenue concentration in December, average customer age 61, 450-SKU portfolio bloat. The brand had high awareness but collapsing desirability among 25–40 cohort. Fixed costs (41 POS, logistics, admin) could not be covered by the 11 non-Christmas months.',
     intervention:
-      'Diagnosed retailer-side friction — staff training, in-store assets, sell-in margin transparency. Built a 4-phase trade marketing roadmap focused on activating the retailer as a sales asset, not just a shelf.',
+      'Conducted quantitative & qualitative research across 150K active customers and 41 POS. Designed three moment-driven ranges (L\'Apéro Maison · Le Moment Pour Moi · Le Cadeau Bien Pensé) targeting Creative Socialisers and Independent Epicureans. Rationalised SKU portfolio from 450 → 250. Built 24-month roadmap across 4 phases with go/no-go KPI gates.',
     outcome:
-      'Roadmap projected 18% velocity lift in pilot retailers within two seasons. Sell-in margin clarity removed a known objection in 8 of 10 retail interviews.',
-    duration: '8 WEEKS',
+      '€23M Y3 revenue target (Base Case · +42% on current). €3M EBITDA positive by Year 3 (from negative today). Christmas dependency reduced 45% → 30% by Year 2. SKU productivity +20%. €1.63M total CapEx — 4× ROI by Month 24. DTC revenue share scales 12% → 25%.',
+    duration: '24 MONTHS',
 
     vitals: [
-      { label: 'PROJECTED VELOCITY LIFT', value: '+18%', trend: 'up' },
-      { label: 'PILOT RETAILERS', value: '12', trend: 'flat' },
-      { label: 'OBJECTION RESOLUTION', value: '8/10', trend: 'up' },
+      { label: 'Y3 REVENUE TARGET', value: '€23M', delta: 'from €16.2M · +42%', trend: 'up' },
+      { label: 'Y3 EBITDA', value: '€3M', delta: 'from negative', trend: 'up' },
+      { label: 'CAPEX ROI · M24', value: '4×', delta: '€1.63M deployed', trend: 'up' },
     ],
 
     build:
-      '4-phase roadmap: train · equip · incentivize · measure. In-store activation kit. Sell-in margin calculator.',
+      'Three moment-driven ranges. SKU rationalisation 450→250. Behavioural CRM segmentation (festive / everyday / solo). Corpo Studio digital activation. 4-phase 24-month roadmap with embedded go/no-go gates.',
     measure:
-      'Velocity per SKU per retailer. Staff recommendation rate. Co-marketing ROI.',
+      'Christmas dependency ratio, SKU revenue contribution, millennial desirability score, DTC revenue share, EBITDA trajectory, basket size, KPI radar across 6 dimensions.',
     analyze:
-      'Retailer interviews revealed margin opacity was the #1 blocker, not consumer demand. Reframed the deck.',
+      'High awareness, low desirability gap collapses in 25–40 cohort. Foie gras + pâtés = 45% of revenue at 60% GM — unambiguous core to amplify. SKU bloat created €1.2M in operational complexity recoverable by rationalisation.',
     deploy:
-      'Pilot proposed across 12 specialty retailers in two regions, with quarterly velocity tracking.',
+      'Phase 1 (M0–6): SKU audit + visual identity refresh. Phase 2 (M6–12): three ranges + DTC rebuild + 15 influencer partnerships. Phase 3 (M12–18): seasonal collections + B2B corporate gifting. Phase 4 (M18–24): subscription model scale.',
 
     fullSummary:
-      'A trade marketing engagement where the brand-side team had been pushing harder on consumer marketing — but the leverage point was the retailer\'s motivation, not the consumer\'s awareness.',
+      'A trade marketing engagement where the bottleneck wasn\'t consumer demand — it was retailer motivation, calendar concentration, and SKU bloat. Reframing the portfolio around moments (not products) unlocked year-round occasions without inventing new categories.',
     artifacts: [
-      'Trade Marketing Roadmap',
-      'In-Store Activation Kit',
-      'Sell-in Margin Calculator',
-      'Pilot Tracking Framework',
+      '24-Month Phased Roadmap',
+      'SKU Rationalisation Map (450→250)',
+      'Three Moment-Driven Ranges Brief',
+      '5-Pillar KPI Governance Framework',
+      'Risk Register × 5 Material Risks',
     ],
-    stack: ['PowerPoint', 'Excel', 'Figma', 'Retailer interviews'],
+    stack: ['PowerPoint', 'Excel', 'Figma', 'Nielsen-style consumer panels'],
+    externalUrl: 'https://comtesse-du-barry-stratergy.netlify.app/',
   },
 ];
 
 export const profile = {
   name: 'Musharraf Shaik',
-  role: 'Data-Driven B2B Marketing Strategist',
+  role: 'B2B Marketing Strategist',
   location: 'Paris, France',
   available: 'September 2026',
   email: 'contact.shaikmusharraf@gmail.com',
   phone: '+33 780 74 2351',
-  education: [
-    {
-      school: 'ESSEC Business School',
-      program: 'Master in Management',
-      period: '2025 — 2027',
-      note: 'GMAT 735',
-    },
-    {
-      school: 'Panimalar Institute',
-      program: 'B.Tech, Electronics & Communication',
-      period: '2019 — 2023',
-      note: '',
-    },
-  ],
-  // Symptoms shown on the home screen — the four diagnostic domains
   domains: [
     { id: 'ACQUISITION', label: 'Acquisition' },
     { id: 'CONVERSION', label: 'Conversion' },

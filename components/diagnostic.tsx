@@ -432,7 +432,7 @@ function DiagnosisPanel({
       >
         <div className="font-mono text-eyebrow uppercase text-bone-deep mb-4 flex items-center gap-3">
           <span className="w-6 h-px bg-bone-fade" />
-          <span>READOUT · LIVE INSTRUMENT</span>
+          <span>INTELLIGENCE BRIEF · INTERACTIVE</span>
         </div>
         <Dashboard slug={c.slug} />
       </div>
