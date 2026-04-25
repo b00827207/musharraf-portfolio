@@ -3,14 +3,13 @@
 @tailwind utilities;
 
 :root {
-  --bg: #08090A;
+  --bg: #06070A;
   --fg: #EAE6DD;
   --vital: #7CFFB7;
+  --amber: #F2C062;
 }
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 html, body {
   margin: 0;
@@ -21,19 +20,18 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  overflow-x: hidden;
 }
 
 body {
-  /* Subtle screen vignette + scanline grain — pure CSS, no JS, near-zero cost */
   background:
     radial-gradient(ellipse at 50% 0%, rgba(124, 255, 183, 0.025) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 100%, rgba(124, 255, 183, 0.015) 0%, transparent 60%),
-    #08090A;
+    radial-gradient(ellipse at 50% 100%, rgba(124, 255, 183, 0.012) 0%, transparent 60%),
+    #06070A;
   min-height: 100vh;
-  position: relative;
 }
 
-/* Scanline overlay — fixed, doesn't repaint on scroll */
+/* Scanline overlay - fixed, no repaint */
 body::before {
   content: '';
   position: fixed;
@@ -49,17 +47,24 @@ body::before {
   z-index: 1;
 }
 
-/* Selection */
+/* Subtle vignette at edges */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 50%, rgba(0,0,0,0.4) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
 ::selection {
   background: var(--vital);
   color: #000;
 }
 
 /* ============================================================ */
-/* EKG LINE — the only continuous animation on the page         */
-/* Pure CSS keyframes drawing across an SVG path                */
+/* EKG mini pulse — telemetry rail */
 /* ============================================================ */
-
 .ekg-line {
   stroke-dasharray: 800;
   stroke-dashoffset: 800;
@@ -74,70 +79,22 @@ body::before {
   100% { stroke-dashoffset: -800; opacity: 0; }
 }
 
-/* Card hover state — subtle lift, vital-color border bloom */
-.diagnostic-card {
-  transition: border-color 0.4s ease, background-color 0.4s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+/* ============================================================ */
+/* Boot terminal — typewriter feel */
+/* ============================================================ */
+.boot-line {
+  opacity: 0;
+  animation: bootIn 0.25s ease-out forwards;
 }
 
-.diagnostic-card:hover {
-  border-color: rgba(124, 255, 183, 0.4);
-  background-color: rgba(124, 255, 183, 0.02);
+@keyframes bootIn {
+  0% { opacity: 0; transform: translateY(2px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
-.diagnostic-card:hover .ekg-line {
-  stroke: var(--vital);
-}
-
-.diagnostic-card[data-active="true"] {
-  border-color: var(--vital);
-  background-color: rgba(124, 255, 183, 0.04);
-}
-
-.diagnostic-card[data-active="true"] .ekg-line {
-  stroke: var(--vital);
-}
-
-/* Corner brackets — clinical monitor framing */
-.bracket {
-  position: relative;
-}
-
-.bracket::before,
-.bracket::after,
-.bracket > .bl,
-.bracket > .br {
-  content: '';
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  border-color: rgba(234, 230, 221, 0.35);
-}
-
-.bracket::before {
-  top: 0; left: 0;
-  border-top: 1px solid;
-  border-left: 1px solid;
-}
-
-.bracket::after {
-  top: 0; right: 0;
-  border-top: 1px solid;
-  border-right: 1px solid;
-}
-
-.bracket > .bl {
-  bottom: 0; left: 0;
-  border-bottom: 1px solid;
-  border-left: 1px solid;
-}
-
-.bracket > .br {
-  bottom: 0; right: 0;
-  border-bottom: 1px solid;
-  border-right: 1px solid;
-}
-
-/* Typewriter blinker */
+/* ============================================================ */
+/* Cursor blink */
+/* ============================================================ */
 .cursor-blink::after {
   content: '▍';
   margin-left: 4px;
@@ -145,28 +102,36 @@ body::before {
   animation: cursor 1.05s steps(1) infinite;
 }
 
-/* Numeric metric font features */
+.cursor-mono::after {
+  content: '_';
+  margin-left: 2px;
+  color: var(--vital);
+  animation: cursor 1.05s steps(1) infinite;
+}
+
+/* ============================================================ */
+/* Scrolling event log */
+/* ============================================================ */
+.event-log-entry {
+  animation: logEntry 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes logEntry {
+  0% { opacity: 0; transform: translateX(-8px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+/* ============================================================ */
+/* Tabular alignment for monospace numbers */
+/* ============================================================ */
 .tabular {
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum';
 }
 
-/* Typewriter container — controlled via inline style width */
-.typewriter {
-  display: inline-block;
-  overflow: hidden;
-  white-space: nowrap;
-  vertical-align: bottom;
-}
-
-/* Vital glow underline */
-.vital-underline {
-  background-image: linear-gradient(transparent calc(100% - 2px), var(--vital) 2px);
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-}
-
+/* ============================================================ */
 /* Status dot */
+/* ============================================================ */
 .status-dot {
   display: inline-block;
   width: 6px;
@@ -177,37 +142,126 @@ body::before {
   animation: pulseSlow 2.6s ease-in-out infinite;
 }
 
+.status-dot-amber {
+  background: var(--amber);
+  box-shadow: 0 0 6px var(--amber);
+}
+
 @keyframes pulseSlow {
   0%, 100% { opacity: 0.45; }
   50% { opacity: 1; }
 }
 
-/* Reduce motion preference */
-@media (prefers-reduced-motion: reduce) {
-  .ekg-line { animation: none; opacity: 1; stroke-dashoffset: 0; }
-  .status-dot { animation: none; opacity: 1; }
-  .cursor-blink::after { animation: none; opacity: 1; }
+/* ============================================================ */
+/* Corner brackets — console framing */
+/* ============================================================ */
+.bracket {
+  position: relative;
 }
 
-/* Custom thin scrollbar */
-::-webkit-scrollbar {
+.bracket::before,
+.bracket::after,
+.bracket > .bl,
+.bracket > .br {
+  content: '';
+  position: absolute;
   width: 8px;
   height: 8px;
+  border-color: rgba(234, 230, 221, 0.35);
+  pointer-events: none;
+}
+
+.bracket::before {
+  top: 0; left: 0;
+  border-top: 1px solid;
+  border-left: 1px solid;
+}
+.bracket::after {
+  top: 0; right: 0;
+  border-top: 1px solid;
+  border-right: 1px solid;
+}
+.bracket > .bl {
+  bottom: 0; left: 0;
+  border-bottom: 1px solid;
+  border-left: 1px solid;
+}
+.bracket > .br {
+  bottom: 0; right: 0;
+  border-bottom: 1px solid;
+  border-right: 1px solid;
+}
+
+.bracket-vital::before,
+.bracket-vital::after,
+.bracket-vital > .bl,
+.bracket-vital > .br {
+  border-color: var(--vital);
+}
+
+/* ============================================================ */
+/* Vital glow underline */
+/* ============================================================ */
+.vital-underline {
+  background-image: linear-gradient(transparent calc(100% - 2px), var(--vital) 2px);
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+/* ============================================================ */
+/* Custom scrollbar */
+/* ============================================================ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(234, 230, 221, 0.1);
-  border-radius: 4px;
+  background: rgba(234, 230, 221, 0.08);
+  border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(124, 255, 183, 0.3);
 }
 
-/* No focus rings on mouse, but keep them for keyboard */
+/* ============================================================ */
+/* Reduced motion */
+/* ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  .ekg-line { animation: none; opacity: 1; stroke-dashoffset: 0; }
+  .status-dot { animation: none; opacity: 1; }
+  .cursor-blink::after { animation: none; opacity: 1; }
+  .cursor-mono::after { animation: none; opacity: 1; }
+}
+
 :focus:not(:focus-visible) { outline: none; }
 :focus-visible {
   outline: 1px solid var(--vital);
   outline-offset: 2px;
+}
+
+/* Subtle CRT flicker on the whole console — very gentle */
+@keyframes crt-flicker {
+  0%, 100% { opacity: 1; }
+  98% { opacity: 1; }
+  98.5% { opacity: 0.96; }
+  99% { opacity: 1; }
+}
+
+.crt {
+  animation: crt-flicker 8s ease-in-out infinite;
+}
+
+/* Glitch shimmer on key text reveals */
+@keyframes glitch-text {
+  0%, 100% { text-shadow: none; }
+  10% { text-shadow: 1px 0 var(--vital); }
+  10.5% { text-shadow: -1px 0 var(--amber); }
+  11% { text-shadow: none; }
+}
+
+.glitch-once {
+  animation: glitch-text 0.6s ease-out;
 }

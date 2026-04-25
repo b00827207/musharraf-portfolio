@@ -1,30 +1,33 @@
-import { notFound } from 'next/navigation';
 import { cases } from '@/lib/data';
 import { CaseFilePage } from '@/components/case-file-page';
+import { notFound } from 'next/navigation';
 
-export async function generateStaticParams() {
+export function generateStaticParams() {
   return cases.map((c) => ({ slug: c.slug }));
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const c = cases.find((x) => x.slug === params.slug);
-  if (!c) return { title: 'Case not found' };
+  const { slug } = await params;
+  const c = cases.find((x) => x.slug === slug);
+  if (!c) return { title: 'Module Not Found · AETHER' };
   return {
-    title: `Case File ${c.caseNumber} · ${c.patient} — Musharraf Shaik`,
+    title: `${c.patient} · AETHER`,
     description: c.symptom,
   };
 }
 
-export default function ProjectPage({ params }: { params: { slug: string } }) {
-  const idx = cases.findIndex((x) => x.slug === params.slug);
-  if (idx === -1) {
-    notFound();
-  }
-  const c = cases[idx];
-  const next = cases[(idx + 1) % cases.length];
-  return <CaseFilePage caseFile={c} next={next} />;
+export default async function ProjectPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const idx = cases.findIndex((x) => x.slug === slug);
+  if (idx === -1) notFound();
+  const c = cases[idx]!;
+  return <CaseFilePage c={c} />;
 }

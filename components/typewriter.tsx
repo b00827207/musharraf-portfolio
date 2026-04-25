@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 export function Typewriter({
   text,
-  speed = 22,
+  speed = 20,
   delay = 0,
   className = '',
   cursor = true,
@@ -23,18 +23,15 @@ export function Typewriter({
   useEffect(() => {
     setOut('');
     setDone(false);
-    let i = 0;
     let raf = 0;
+    let startTs = 0;
+    let i = 0;
     let last = 0;
-    let started = false;
-    let startTime = 0;
 
     const tick = (ts: number) => {
-      if (!started) {
-        startTime = ts;
-        started = true;
-      }
-      if (ts - startTime < delay) {
+      if (startTs === 0) startTs = ts;
+      const elapsed = ts - startTs;
+      if (elapsed < delay) {
         raf = requestAnimationFrame(tick);
         return;
       }

@@ -33,7 +33,6 @@ export function Counter({
       setDisplay(value);
       return;
     }
-
     let raf = 0;
     let startTs = 0;
     const target = parsed.num;
@@ -42,29 +41,21 @@ export function Counter({
     const tick = (ts: number) => {
       if (startTs === 0) startTs = ts;
       const elapsed = ts - startTs;
-
       if (elapsed < delay) {
         raf = requestAnimationFrame(tick);
         return;
       }
-
       const t = Math.min(1, (elapsed - delay) / duration);
       const eased = 1 - Math.pow(1 - t, 3);
       const cur = target * eased;
-
-      const formatted =
-        decimals > 0 ? cur.toFixed(decimals) : Math.round(cur).toString();
+      const formatted = decimals > 0 ? cur.toFixed(decimals) : Math.round(cur).toString();
       setDisplay(`${parsed.prefix}${formatted}${parsed.suffix}`);
-
-      if (t < 1) {
-        raf = requestAnimationFrame(tick);
-      } else {
-        const finalFormatted =
-          decimals > 0 ? target.toFixed(decimals) : target.toString();
-        setDisplay(`${parsed.prefix}${finalFormatted}${parsed.suffix}`);
+      if (t < 1) raf = requestAnimationFrame(tick);
+      else {
+        const final = decimals > 0 ? target.toFixed(decimals) : target.toString();
+        setDisplay(`${parsed.prefix}${final}${parsed.suffix}`);
       }
     };
-
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [parsed, value, duration, delay]);

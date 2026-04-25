@@ -1,286 +1,170 @@
 'use client';
 
-import Link from 'next/link';
-import { type CaseFile } from '@/lib/data';
 import { Counter } from './counter';
-import { Typewriter } from './typewriter';
-import { EKG } from './ekg';
 import { Dashboard } from './dashboard';
+import type { CaseFile } from '@/lib/data';
+import Link from 'next/link';
 
-export function CaseFilePage({
-  caseFile: c,
-  next,
-}: {
-  caseFile: CaseFile;
-  next: CaseFile;
-}) {
+export function CaseFilePage({ c }: { c: CaseFile }) {
   return (
-    <main className="min-h-screen pt-20 pb-32 px-5 md:px-8 relative z-10">
-      <div className="max-w-[1500px] mx-auto">
-        {/* Breadcrumb */}
-        <nav
-          aria-label="Breadcrumb"
-          className="pt-12 pb-10 font-mono text-tiny uppercase tracking-[0.18em] text-bone-deep flex items-center gap-3"
-        >
+    <main className="min-h-screen bg-ink-950 text-bone">
+      <div className="max-w-[1400px] mx-auto px-5 md:px-8 py-8 md:py-12 space-y-12">
+        {/* TOPNAV */}
+        <header className="flex items-center justify-between border-b border-bone-fade/30 pb-4">
           <Link
             href="/"
-            className="hover:text-bone transition-colors"
+            className="font-mono text-[10.5px] uppercase tracking-[0.18em] text-bone-dim hover:text-vital transition-colors flex items-center gap-2"
           >
-            ← DIAGNOSTIC
+            <span>‹</span> RETURN TO AETHER
           </Link>
-          <span>/</span>
-          <span className="text-bone-dim">CASE FILE {c.caseNumber}</span>
-          <span>/</span>
-          <span className="text-vital">{c.patient.toUpperCase()}</span>
-        </nav>
-
-        {/* HERO */}
-        <header className="border-y border-bone-fade/40 py-12 md:py-16">
-          <div className="grid md:grid-cols-12 gap-6 md:gap-10">
-            <div className="md:col-span-2">
-              <div className="font-display text-mega text-vital leading-none tabular tracking-[-0.04em]">
-                {c.caseNumber}
-              </div>
-              <div className="mt-3 font-mono text-micro uppercase text-bone-deep">
-                {c.category}
-              </div>
-            </div>
-
-            <div className="md:col-span-7">
-              <div className="font-mono text-eyebrow uppercase text-bone-deep mb-5 flex items-center gap-3">
-                <span className="status-dot" />
-                <span>CHART · {c.domain}</span>
-              </div>
-              <h1 className="font-display text-mega font-light text-bone leading-[0.95] tracking-[-0.04em]">
-                {c.patient}
-              </h1>
-              <div className="mt-4 font-mono text-tiny uppercase tracking-[0.16em] text-bone-dim">
-                {c.patientMeta}
-              </div>
-            </div>
-
-            <div className="md:col-span-3">
-              <div className="font-mono text-micro uppercase text-bone-deep mb-2">
-                PRESENTING
-              </div>
-              <p className="font-display italic text-[1.15rem] md:text-[1.3rem] leading-[1.35] text-bone">
-                <Typewriter text={c.symptom} speed={18} cursor={false} />
-              </p>
-              <div className="mt-6 font-mono text-tiny uppercase text-bone-deep">
-                DURATION · {c.duration}
-              </div>
-            </div>
+          <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-bone-deep">
+            DEEP LINK · {c.caseNumber}
           </div>
         </header>
 
-        {/* VITALS STRIP */}
-        <section className="border-b border-bone-fade/40 py-12">
-          <div className="font-mono text-eyebrow uppercase text-bone-deep mb-8">
-            VITALS · OUTCOME
+        {/* CASE HEADER */}
+        <section>
+          <div className="flex items-center flex-wrap gap-3 mb-4">
+            <div className="font-mono text-eyebrow uppercase text-vital flex items-center gap-3">
+              <span className="status-dot" />
+              <span>MODULE · {c.caseNumber}</span>
+            </div>
+            <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-bone-deep">
+              / {c.domain} / {c.category}
+            </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+
+          <h1 className="font-display text-mega font-light text-bone leading-[0.95] tracking-[-0.04em]">
+            {c.patient}
+          </h1>
+          <div className="mt-3 font-mono text-tiny uppercase tracking-[0.16em] text-bone-dim">
+            {c.patientMeta}
+          </div>
+        </section>
+
+        {/* SYMPTOM */}
+        <section className="border-y border-bone-fade/30 py-6">
+          <div className="font-mono text-eyebrow uppercase text-bone-deep mb-3 flex items-center gap-3">
+            <span className="w-5 h-px bg-bone-fade" />
+            <span>PRESENTING SYMPTOM</span>
+          </div>
+          <p className="font-display text-lead text-bone leading-snug max-w-4xl">{c.symptom}</p>
+        </section>
+
+        {/* VITALS */}
+        <section>
+          <div className="font-mono text-eyebrow uppercase text-bone-deep mb-3 flex items-center gap-3">
+            <span className="w-5 h-px bg-bone-fade" />
+            <span>VITALS</span>
+          </div>
+          <div className="grid md:grid-cols-3 gap-3">
             {c.vitals.map((v, i) => (
-              <div
-                key={v.label}
-                className="bracket relative border border-bone-fade/40 bg-ink-900/30 px-6 py-7"
-              >
-                <span className="bl" />
-                <span className="br" />
-                <div className="font-mono text-micro uppercase text-bone-deep mb-3">
+              <div key={v.label} className="border border-bone-fade/40 bg-ink-900/30 px-5 py-5">
+                <div className="font-mono text-[9.5px] uppercase tracking-[0.18em] text-bone-deep mb-2">
                   {v.label}
                 </div>
-                <div className="font-display text-[3rem] md:text-[3.6rem] leading-none text-vital tracking-[-0.025em]">
-                  <Counter value={v.value} delay={i * 200} duration={1100} />
+                <div className="font-display text-[2.2rem] tabular text-vital leading-none tracking-[-0.02em]">
+                  <Counter value={v.value} duration={1100} delay={500 + i * 120} />
                 </div>
                 {v.delta && (
-                  <div className="mt-3 font-mono text-micro uppercase text-bone-dim">
+                  <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-bone-dim mt-2">
                     {v.delta}
                   </div>
                 )}
-                <div className="mt-4 h-5 -mx-1">
-                  <EKG className="w-full h-full" delay={i * 0.6} active />
-                </div>
               </div>
             ))}
           </div>
         </section>
 
-        {/* DASHBOARD — case-specific live readout */}
-        <section className="border-b border-bone-fade/40 py-16">
-          <div className="font-mono text-eyebrow uppercase text-bone-deep mb-6 flex items-center gap-3">
-            <span className="w-6 h-px bg-bone-fade" />
+        {/* CLINICAL NOTES */}
+        <section className="space-y-7">
+          <div className="font-mono text-eyebrow uppercase text-bone-deep flex items-center gap-3">
+            <span className="w-5 h-px bg-bone-fade" />
+            <span>CLINICAL NOTES</span>
+          </div>
+
+          {[
+            { label: 'PRESENTING', text: c.presenting },
+            { label: 'INTERVENTION', text: c.intervention },
+            { label: 'OUTCOME', text: c.outcome },
+          ].map((s, i) => (
+            <div key={s.label} className="grid md:grid-cols-12 gap-4">
+              <div className="md:col-span-3">
+                <div className="font-mono text-[9.5px] uppercase tracking-[0.2em] text-vital">
+                  {String(i + 1).padStart(2, '0')} / {s.label}
+                </div>
+              </div>
+              <p className="md:col-span-9 font-display text-[1.05rem] md:text-[1.15rem] text-bone leading-relaxed">
+                {s.text}
+              </p>
+            </div>
+          ))}
+
+          <div className="grid md:grid-cols-4 gap-3 pt-4 border-t border-bone-fade/30">
+            {[
+              { label: 'BUILD', text: c.build },
+              { label: 'MEASURE', text: c.measure },
+              { label: 'ANALYZE', text: c.analyze },
+              { label: 'DEPLOY', text: c.deploy },
+            ].map((s) => (
+              <div key={s.label} className="border border-bone-fade/40 bg-ink-900/30 px-4 py-4">
+                <div className="font-mono text-[9.5px] uppercase tracking-[0.2em] text-vital mb-2">
+                  {s.label}
+                </div>
+                <p className="font-mono text-[10.5px] text-bone-dim leading-relaxed">{s.text}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* DASHBOARD */}
+        <section>
+          <div className="font-mono text-eyebrow uppercase text-bone-deep mb-4 flex items-center gap-3">
+            <span className="w-5 h-px bg-bone-fade" />
             <span>INTELLIGENCE BRIEF · INTERACTIVE</span>
           </div>
           <Dashboard slug={c.slug} />
         </section>
 
-        {/* CLINICAL NOTES */}
-        <section className="grid md:grid-cols-12 gap-6 md:gap-12 py-16 md:py-24">
+        {/* SUMMARY + ARTIFACTS + STACK */}
+        <section className="grid md:grid-cols-12 gap-6 border-t border-bone-fade/30 pt-6">
+          <div className="md:col-span-7">
+            <div className="font-mono text-[9.5px] uppercase tracking-[0.18em] text-bone-deep mb-2">
+              ENGAGEMENT SUMMARY
+            </div>
+            <p className="font-display text-[1.1rem] text-bone leading-relaxed">{c.fullSummary}</p>
+          </div>
           <div className="md:col-span-3">
-            <div className="md:sticky md:top-24">
-              <div className="font-mono text-eyebrow uppercase text-bone-deep mb-2">
-                FILE
-              </div>
-              <h2 className="font-display text-diagnosis text-bone leading-[1.05]">
-                Clinical
-                <br />
-                <span className="italic">notes.</span>
-              </h2>
+            <div className="font-mono text-[9.5px] uppercase tracking-[0.18em] text-bone-deep mb-2">
+              ARTIFACTS
             </div>
-          </div>
-
-          <div className="md:col-span-9 space-y-12">
-            <Note label="PRESENTING SYMPTOM" body={c.presenting} />
-            <Note label="INTERVENTION" body={c.intervention} />
-            <Note label="OUTCOME" body={c.outcome} accent />
-            <Note label="EXECUTIVE SUMMARY" body={c.fullSummary} />
-          </div>
-        </section>
-
-        {/* BMAD CHART */}
-        <section className="py-16 border-t border-bone-fade/40">
-          <div className="font-mono text-eyebrow uppercase text-bone-deep mb-8">
-            CHART · BMAD METHOD
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-            <ChartBlock label="BUILD" body={c.build} index="01" />
-            <ChartBlock label="MEASURE" body={c.measure} index="02" />
-            <ChartBlock label="ANALYZE" body={c.analyze} index="03" />
-            <ChartBlock label="DEPLOY" body={c.deploy} index="04" />
-          </div>
-        </section>
-
-        {/* ARTIFACTS & STACK */}
-        <section className="grid md:grid-cols-2 gap-12 py-16 border-t border-bone-fade/40">
-          <div>
-            <div className="font-mono text-eyebrow uppercase text-bone-deep mb-6">
-              ARTIFACTS · DELIVERED
-            </div>
-            <ul className="space-y-3">
-              {c.artifacts.map((a, i) => (
-                <li
-                  key={a}
-                  className="flex items-baseline gap-4 py-3 border-b border-bone-fade/30"
-                >
-                  <span className="font-mono text-micro text-bone-deep tabular shrink-0">
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <span className="font-display text-[1.15rem] text-bone leading-snug">
-                    {a}
-                  </span>
+            <ul className="font-mono text-[10.5px] text-bone-dim space-y-1.5">
+              {c.artifacts.map((a) => (
+                <li key={a} className="flex gap-2">
+                  <span className="text-vital">·</span>
+                  <span>{a}</span>
                 </li>
               ))}
             </ul>
           </div>
-
-          <div>
-            <div className="font-mono text-eyebrow uppercase text-bone-deep mb-6">
-              INSTRUMENTS
+          <div className="md:col-span-2">
+            <div className="font-mono text-[9.5px] uppercase tracking-[0.18em] text-bone-deep mb-2">
+              STACK
             </div>
-            <div className="flex flex-wrap gap-2">
+            <ul className="font-mono text-[10.5px] text-bone-dim space-y-1.5">
               {c.stack.map((s) => (
-                <span
-                  key={s}
-                  className="font-mono text-tiny px-3 py-2 border border-bone-fade/40 text-bone-dim"
-                >
-                  {s}
-                </span>
+                <li key={s}>{s}</li>
               ))}
-            </div>
+            </ul>
           </div>
         </section>
 
-        {/* NEXT CASE */}
-        <section className="mt-16 border-t border-bone-fade/40 pt-12">
-          <Link
-            href={`/projects/${next.slug}`}
-            className="group flex items-center justify-between gap-6 hover:text-vital transition-colors"
-          >
-            <div>
-              <div className="font-mono text-micro uppercase text-bone-deep mb-2">
-                NEXT CASE FILE — {next.caseNumber}
-              </div>
-              <div className="font-display text-diagnosis text-bone group-hover:text-vital transition-colors leading-[1.05]">
-                {next.patient}
-              </div>
-              <div className="mt-2 font-mono text-tiny uppercase text-bone-dim">
-                {next.symptom}
-              </div>
-            </div>
-            <span className="font-mono text-eyebrow uppercase text-bone-deep group-hover:text-vital group-hover:translate-x-2 transition-all shrink-0">
-              →
-            </span>
-          </Link>
-        </section>
-
-        {/* RETURN */}
-        <div className="mt-16 flex items-center justify-between font-mono text-micro uppercase text-bone-deep">
-          <Link href="/" className="hover:text-bone transition-colors">
-            ← RETURN TO DIAGNOSTIC
-          </Link>
-          <div className="flex items-center gap-3">
-            <span className="status-dot" />
-            <span>END OF FILE</span>
-          </div>
-        </div>
+        {/* FOOTER */}
+        <footer className="border-t border-bone-fade/30 pt-6 flex flex-wrap gap-4 items-baseline justify-between font-mono text-[10px] uppercase tracking-[0.18em] text-bone-deep">
+          <div>AETHER · ATTENDING SHAIK MUSHARRAF</div>
+          <div>AVAILABLE · SEPTEMBER 2026 · PARIS</div>
+        </footer>
       </div>
     </main>
-  );
-}
-
-function Note({
-  label,
-  body,
-  accent = false,
-}: {
-  label: string;
-  body: string;
-  accent?: boolean;
-}) {
-  return (
-    <div>
-      <div className="font-mono text-eyebrow uppercase text-bone-deep mb-4 flex items-center gap-3">
-        <span className="w-6 h-px bg-bone-fade" />
-        <span>{label}</span>
-      </div>
-      <p
-        className={`text-[1.1rem] md:text-[1.35rem] leading-[1.55] font-light ${
-          accent ? 'text-bone' : 'text-bone-dim'
-        }`}
-      >
-        {body}
-      </p>
-    </div>
-  );
-}
-
-function ChartBlock({
-  label,
-  body,
-  index,
-}: {
-  label: string;
-  body: string;
-  index: string;
-}) {
-  return (
-    <div className="bracket relative border border-bone-fade/40 bg-ink-900/30 px-5 py-7">
-      <span className="bl" />
-      <span className="br" />
-      <div className="flex items-baseline justify-between mb-5">
-        <span className="font-display text-vital text-[2rem] leading-none tabular tracking-[-0.02em]">
-          {index}
-        </span>
-        <span className="font-mono text-micro uppercase text-bone-deep">
-          PHASE
-        </span>
-      </div>
-      <div className="font-mono text-tiny uppercase text-vital mb-3 tracking-[0.16em]">
-        {label}
-      </div>
-      <p className="text-tiny font-mono text-bone-dim leading-relaxed">
-        {body}
-      </p>
-    </div>
   );
 }

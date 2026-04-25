@@ -1,97 +1,93 @@
-# DIAGNOSTIC
+# AETHER · Operating Console
 
-A clinical-interface portfolio for **Musharraf Shaik** — Data-Driven B2B Marketing Strategist.
+A JARVIS-style console for Shaik Musharraf's strategic engagements.
 
-It does not look like a portfolio. It looks like a diagnostic tool.
+## What this is
 
-> _Where is your revenue bleeding?_
+Not a portfolio. An **operating system** with five live modules. Visitors type commands; the system responds.
 
-## How it works
-
-The visitor lands on a single screen and is asked to identify their presenting symptom — Acquisition · Conversion · Retention · Pricing. Click one. The screen rebuilds itself as a medical chart for the matching engagement: a diagnostic phrase, a patient (the client), clinical notes (presenting / intervention / outcome), and vitals that count up from zero like a heart-rate finding rhythm.
-
-Every diagnosis ends with the same line: _This kind of thinking, available September 2026._
-
-## The single rule
-
-One signature move beats five mediocre ones. So:
-
-- One accent color: **vital green** `#7CFFB7`. Used on the EKG line, active state, and the headline underline. Nowhere else.
-- One continuous animation: a CSS-keyframe EKG line that draws across each idle card.
-- One reveal motion: typewriter for the diagnostic question, count-up for the vitals.
-- One sound: a soft 880Hz monitor beep on diagnosis load — **off by default**, toggle in the header.
-
-No canvas. No Lenis. No custom JS cursor. No magnetic effects. No infinite marquees.
+- **Boot sequence** — terminal logs scroll for ~1.5 seconds on first load
+- **Telemetry rail (left)** — Paris time, session ID, uptime, system status, EKG, scrolling event log
+- **Center stage** — view that swaps based on commands (idle / diagnostic / module / identity / list / recruit / help)
+- **Command bar (bottom)** — typed input with TAB autocomplete, ↑↓ history, suggestions
+- **Optional sound** — soft 880Hz beep on success, off by default
 
 ## Stack
 
-- Next.js 14 (App Router)
-- React 18
-- Tailwind CSS 3.4
-- Web Audio API for the optional beep
-- TypeScript
+Next.js 14 App Router · React 18 · TypeScript strict · Tailwind 3 · Fraunces + JetBrains Mono via `next/font/google`. No backend. No external API calls. No databases.
 
-That's it. No Framer Motion, no Lenis. The only animation library is CSS.
+## Performance budget
 
-## Files
+Continuous animations at runtime:
+- 1Hz clock + uptime tick (telemetry rail)
+- CSS keyframe EKG (one path, no JS)
+- CSS keyframe status-dot pulse + cursor blink + CRT flicker
+- Event log entries animate in once when added
 
-```
-diagnostic/
-├── app/
-│   ├── layout.tsx                    # Fonts (Fraunces + JetBrains Mono), sound provider, monitor bar
-│   ├── page.tsx                      # Hosts <Diagnostic />
-│   ├── globals.css                   # Tokens · EKG keyframes · scanline · brackets
-│   ├── not-found.tsx
-│   └── projects/[slug]/page.tsx      # Dynamic case file route
-│
-├── components/
-│   ├── diagnostic.tsx                # The home interface — domain cards + diagnosis panel
-│   ├── case-file-page.tsx            # Full chart view per project
-│   ├── monitor-bar.tsx               # Top bar — clock, sound toggle
-│   ├── ekg.tsx                       # SVG EKG waveform + CSS animation
-│   ├── typewriter.tsx                # Char-by-char text reveal
-│   ├── counter.tsx                   # Number tick-up
-│   └── sound.tsx                     # Web Audio context + provider
-│
-├── lib/
-│   └── data.ts                       # Cases, profile, domain mapping
-│
-├── tailwind.config.ts
-├── next.config.js
-├── tsconfig.json
-├── package.json
-└── postcss.config.js
-```
+Everything else is **one-shot reveal** triggered by command.
 
 ## Running
 
 ```bash
 npm install
 npm run dev
+# open http://localhost:3000
 ```
 
-Open `http://localhost:3000`.
+## Commands
 
-## Performance
+| Command | Effect |
+|---|---|
+| `HELP` or `?` | Show command manifest |
+| `LIST.MODULES` | Enumerate all 5 engagements |
+| `WHO.IS` | Identity scan (JARVIS profiling) |
+| `DIAG.<DOMAIN>` | Run diagnostic on ACQUISITION / CONVERSION / RETENTION / PRICING |
+| `OPEN.<MODULE>` | Load case (CRIO / MARSELIA / BVLGARI / KNR / COMTESSE) |
+| `SHOW.<METRIC>` | Fuzzy match a metric (e.g. SHOW.SYNERGY) |
+| `RECRUIT` | Open contact channel |
+| `REBOOT` | Return to idle |
+| `CLEAR` | Clear event log |
 
-Lighthouse will hit 100 on every category except SEO (which depends on metadata, also tuned). The reasons:
+Keyboard shortcuts in the command bar:
+- `TAB` — autocomplete first suggestion
+- `↑` / `↓` — recall previous commands
+- `ESC` — clear input
+- `ENTER` — execute
 
-- No client-side animation library on the homepage critical path
-- All animation is CSS keyframes and lightweight intersection-observed reveals
-- Fonts loaded via `next/font` — zero CLS
-- Static export of project pages via `generateStaticParams`
-- The EKG animation is offloaded to compositor (CSS `stroke-dashoffset`)
+## Deployment
 
-## Editing
+Deploys on Netlify with default Next.js settings. Build command: `npm run build`. Publish directory: `.next`.
 
-Add a new case: append to the `cases` array in `lib/data.ts` with the same shape. The home grid, the case-file route, and the next-case logic all derive from this single array.
+## File map
 
-Change the headline phrase: `components/diagnostic.tsx`, search for "revenue bleeding".
+```
+app/
+  layout.tsx              fonts + AetherProvider
+  page.tsx                Boot → main shell
+  globals.css             tokens, scanlines, EKG, brackets
+  not-found.tsx
+  projects/[slug]/page.tsx   deep-link route to single module
 
-Change the closing line: same file, search for "available September".
+components/
+  aether-core.tsx         state engine (event log, view, commands, sound)
+  boot.tsx                terminal-style boot sequence
+  command-bar.tsx         typed input with autocomplete
+  telemetry-rail.tsx      left rail (clock, status, EKG, log, sound)
+  stage.tsx               center area, dispatches view
+  case-file-page.tsx      standalone deep-link page
+  dashboard.tsx           5 case-specific intelligence dashboards
+  counter.tsx             memoized animated number
+  typewriter.tsx          char-by-char text reveal
+  ekg.tsx                 SVG pulse component
+  views/
+    idle-view.tsx         landing experience
+    diagnostic-view.tsx   DIAG.<domain> result
+    module-view.tsx       OPEN.<slug> full case
+    identity-view.tsx     WHO.IS profiling
+    modules-list-view.tsx LIST.MODULES output
+    recruit-view.tsx      RECRUIT contact card
+    help-view.tsx         command manifest
 
-Change tonal voice across all cases: edit the case fields in `lib/data.ts` directly.
-
-## License
-
-Personal portfolio. Fork and replace `lib/data.ts` for your own.
+lib/
+  data.ts                 5 case files + profile
+```

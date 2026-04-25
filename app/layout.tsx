@@ -1,13 +1,11 @@
 import type { Metadata } from 'next';
 import { Fraunces, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
-import { SoundProvider } from '@/components/sound';
-import { MonitorBar } from '@/components/monitor-bar';
+import { AetherProvider } from '@/components/aether-core';
 
 const fraunces = Fraunces({
   subsets: ['latin'],
   variable: '--font-fraunces',
-  axes: ['opsz', 'SOFT'],
   display: 'swap',
 });
 
@@ -18,32 +16,22 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'DIAGNOSTIC — Musharraf Shaik',
+  title: 'AETHER · Musharraf Shaik',
   description:
-    'A diagnostic interface for B2B revenue problems. Click a presenting symptom; the relevant case file loads.',
+    'AETHER · An operating console of strategic engagements. Five live modules. Type a command. Available September 2026.',
   openGraph: {
-    title: 'DIAGNOSTIC — Musharraf Shaik',
-    description:
-      'A diagnostic interface for B2B revenue problems. Click a presenting symptom; the relevant case file loads.',
+    title: 'AETHER · Musharraf Shaik',
+    description: 'An operating console. Five live engagements. Type a command.',
     type: 'website',
   },
+  robots: { index: true, follow: true },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${fraunces.variable} ${mono.variable}`}
-    >
-      <body className="font-mono">
-        <SoundProvider>
-          <MonitorBar />
-          {children}
-        </SoundProvider>
+    <html lang="en" className={`${fraunces.variable} ${mono.variable}`}>
+      <body className="antialiased">
+        <AetherProvider>{children}</AetherProvider>
       </body>
     </html>
   );
