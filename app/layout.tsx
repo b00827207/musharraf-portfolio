@@ -1,11 +1,16 @@
 import type { Metadata } from 'next';
-import { Fraunces, JetBrains_Mono } from 'next/font/google';
+import { Fraunces, Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
-import { AetherProvider } from '@/components/aether-core';
 
 const fraunces = Fraunces({
   subsets: ['latin'],
   variable: '--font-fraunces',
+  display: 'swap',
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
   display: 'swap',
 });
 
@@ -16,12 +21,13 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'AETHER · Musharraf Shaik',
+  title: 'Musharraf Shaik — Marketing Strategist',
   description:
-    'AETHER · An operating console of strategic engagements. Five live modules. Type a command. Available September 2026.',
+    'Marketing strategist. Five engagements on file. Diagnoses where revenue is bleeding and builds the system that fixes it. ESSEC MiM. Available September 2026, Paris.',
   openGraph: {
-    title: 'AETHER · Musharraf Shaik',
-    description: 'An operating console. Five live engagements. Type a command.',
+    title: 'Musharraf Shaik — Marketing Strategist',
+    description:
+      'Five engagements. €14M synergy. $1.17B brand thesis. ₹4.2M direct revenue. 11× operational growth.',
     type: 'website',
   },
   robots: { index: true, follow: true },
@@ -29,10 +35,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${mono.variable}`}>
-      <body className="antialiased">
-        <AetherProvider>{children}</AetherProvider>
-      </body>
+    <html
+      lang="en"
+      className={`${fraunces.variable} ${inter.variable} ${mono.variable}`}
+    >
+      <body className="antialiased">{children}</body>
     </html>
   );
 }

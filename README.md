@@ -1,93 +1,70 @@
-# AETHER · Operating Console
+# Musharraf Shaik · Portfolio
 
-A JARVIS-style console for Shaik Musharraf's strategic engagements.
+A classic editorial portfolio built around five strategic engagements.
 
-## What this is
+## Concept
 
-Not a portfolio. An **operating system** with five live modules. Visitors type commands; the system responds.
+> A marketing strategist who finds where revenue is bleeding — and builds the system that fixes it.
 
-- **Boot sequence** — terminal logs scroll for ~1.5 seconds on first load
-- **Telemetry rail (left)** — Paris time, session ID, uptime, system status, EKG, scrolling event log
-- **Center stage** — view that swaps based on commands (idle / diagnostic / module / identity / list / recruit / help)
-- **Command bar (bottom)** — typed input with TAB autocomplete, ↑↓ history, suggestions
-- **Optional sound** — soft 880Hz beep on success, off by default
+Five cases. Five outcomes. One scrolling page. Each case is presented as a magazine-style editorial spread with story, metrics, and an inline interactive intelligence brief.
 
 ## Stack
 
-Next.js 14 App Router · React 18 · TypeScript strict · Tailwind 3 · Fraunces + JetBrains Mono via `next/font/google`. No backend. No external API calls. No databases.
+Next.js 14 App Router · React 18 · TypeScript strict · Tailwind 3 · Fraunces (display) + Inter (body) + JetBrains Mono (technical) via `next/font/google`. No backend.
 
-## Performance budget
+## Design
 
-Continuous animations at runtime:
-- 1Hz clock + uptime tick (telemetry rail)
-- CSS keyframe EKG (one path, no JS)
-- CSS keyframe status-dot pulse + cursor blink + CRT flicker
-- Event log entries animate in once when added
+- **Palette**: warm paper (`#F5F1E8`) background, deep ink (`#1A1815`) text, terracotta (`#B8543B`) single accent
+- **Type**: Fraunces for display headlines and numbers (italics for emphasis). Inter for body. JetBrains Mono for labels and metadata
+- **Animation**: scroll-triggered fade-up on every section. Numbers count up when in view. Charts draw in. Marquee ribbon in hero. All CSS keyframes for continuous animation
+- **Layout**: alternating editorial spreads (text/dashboard switch sides per case) with large faded section numerals in the background
 
-Everything else is **one-shot reveal** triggered by command.
+## Performance
 
-## Running
+Same constraints as before:
+- Continuous JS animations: only the 30-second clock tick in hero
+- Continuous CSS: marquee, paper grain, status dot pulse — all GPU-friendly
+- Charts and counters animate **only when in viewport** (IntersectionObserver), and **only once**
+- No particle fields. No custom cursors. No smooth-scroll libraries beyond CSS `scroll-behavior: smooth`
+
+## Run
 
 ```bash
 npm install
 npm run dev
-# open http://localhost:3000
+# http://localhost:3000
 ```
 
-## Commands
-
-| Command | Effect |
-|---|---|
-| `HELP` or `?` | Show command manifest |
-| `LIST.MODULES` | Enumerate all 5 engagements |
-| `WHO.IS` | Identity scan (JARVIS profiling) |
-| `DIAG.<DOMAIN>` | Run diagnostic on ACQUISITION / CONVERSION / RETENTION / PRICING |
-| `OPEN.<MODULE>` | Load case (CRIO / MARSELIA / BVLGARI / KNR / COMTESSE) |
-| `SHOW.<METRIC>` | Fuzzy match a metric (e.g. SHOW.SYNERGY) |
-| `RECRUIT` | Open contact channel |
-| `REBOOT` | Return to idle |
-| `CLEAR` | Clear event log |
-
-Keyboard shortcuts in the command bar:
-- `TAB` — autocomplete first suggestion
-- `↑` / `↓` — recall previous commands
-- `ESC` — clear input
-- `ENTER` — execute
-
-## Deployment
-
-Deploys on Netlify with default Next.js settings. Build command: `npm run build`. Publish directory: `.next`.
-
-## File map
+## Map
 
 ```
 app/
-  layout.tsx              fonts + AetherProvider
-  page.tsx                Boot → main shell
-  globals.css             tokens, scanlines, EKG, brackets
+  layout.tsx              fonts + meta
+  page.tsx                Hero → Thesis → Work → Range → About
+  globals.css             paper, grain, marquee, num-shine
   not-found.tsx
-  projects/[slug]/page.tsx   deep-link route to single module
+  case/[slug]/page.tsx    deep link to one case
 
 components/
-  aether-core.tsx         state engine (event log, view, commands, sound)
-  boot.tsx                terminal-style boot sequence
-  command-bar.tsx         typed input with autocomplete
-  telemetry-rail.tsx      left rail (clock, status, EKG, log, sound)
-  stage.tsx               center area, dispatches view
-  case-file-page.tsx      standalone deep-link page
-  dashboard.tsx           5 case-specific intelligence dashboards
-  counter.tsx             memoized animated number
-  typewriter.tsx          char-by-char text reveal
-  ekg.tsx                 SVG pulse component
-  views/
-    idle-view.tsx         landing experience
-    diagnostic-view.tsx   DIAG.<domain> result
-    module-view.tsx       OPEN.<slug> full case
-    identity-view.tsx     WHO.IS profiling
-    modules-list-view.tsx LIST.MODULES output
-    recruit-view.tsx      RECRUIT contact card
-    help-view.tsx         command manifest
+  nav.tsx                 fixed top bar
+  hero.tsx                headline + marquee + signature
+  thesis.tsx              "what I do" section
+  work.tsx                5 case spreads with dashboards
+  range.tsx               6-cell skill matrix
+  about.tsx               education + leadership + contact
+  footer.tsx              colophon
+
+  dash-card.tsx           5 case-specific intelligence dashboards
+  counter.tsx             animated number, in-view triggered
+  reveal.tsx              fade-up wrapper + word-split headline
+  use-in-view.ts          IntersectionObserver hook
+
+  case-detail.tsx         standalone deep-link page
 
 lib/
-  data.ts                 5 case files + profile
+  data.ts                 5 cases + profile
 ```
+
+## Deploy
+
+Auto-deploys on Netlify with default Next.js build. No env vars. No secrets.

@@ -3,265 +3,236 @@
 @tailwind utilities;
 
 :root {
-  --bg: #06070A;
-  --fg: #EAE6DD;
-  --vital: #7CFFB7;
-  --amber: #F2C062;
+  --paper: #F5F1E8;
+  --paper-warm: #EFE9D9;
+  --ink: #1A1815;
+  --ink-dim: #5A554C;
+  --terra: #B8543B;
+  --terra-deep: #8E3F2C;
+  --gold: #A8842F;
+  --moss: #5C7544;
 }
 
 * { box-sizing: border-box; }
 
+html {
+  scroll-behavior: smooth;
+}
+
 html, body {
   margin: 0;
   padding: 0;
-  background: var(--bg);
-  color: var(--fg);
-  font-feature-settings: 'ss01', 'ss02', 'cv11';
+  background: var(--paper);
+  color: var(--ink);
+  font-feature-settings: 'ss01', 'ss02', 'cv11', 'kern';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
 }
 
-body {
-  background:
-    radial-gradient(ellipse at 50% 0%, rgba(124, 255, 183, 0.025) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 100%, rgba(124, 255, 183, 0.012) 0%, transparent 60%),
-    #06070A;
-  min-height: 100vh;
-}
-
-/* Scanline overlay - fixed, no repaint */
+/* Paper grain — single fixed SVG, doesn't repaint */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background-image: repeating-linear-gradient(
-    0deg,
-    rgba(255, 255, 255, 0.012) 0px,
-    rgba(255, 255, 255, 0.012) 1px,
-    transparent 1px,
-    transparent 3px
-  );
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='3'/><feColorMatrix values='0 0 0 0 0.10 0 0 0 0 0.09 0 0 0 0 0.08 0 0 0 0.045 0'/></filter><rect width='180' height='180' filter='url(%23n)'/></svg>");
+  background-size: 180px 180px;
   pointer-events: none;
   z-index: 1;
+  mix-blend-mode: multiply;
+  opacity: 0.55;
 }
 
-/* Subtle vignette at edges */
+/* Subtle vignette */
 body::after {
   content: '';
   position: fixed;
   inset: 0;
-  background: radial-gradient(circle at center, transparent 50%, rgba(0,0,0,0.4) 100%);
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(60, 50, 30, 0.08) 100%);
   pointer-events: none;
   z-index: 1;
 }
 
+main, header, section, footer {
+  position: relative;
+  z-index: 2;
+}
+
 ::selection {
-  background: var(--vital);
-  color: #000;
+  background: var(--terra);
+  color: var(--paper);
 }
 
 /* ============================================================ */
-/* EKG mini pulse — telemetry rail */
-/* ============================================================ */
-.ekg-line {
-  stroke-dasharray: 800;
-  stroke-dashoffset: 800;
-  animation: ekg-draw 5s linear infinite;
-}
-
-@keyframes ekg-draw {
-  0%   { stroke-dashoffset: 800; opacity: 0; }
-  5%   { opacity: 1; }
-  60%  { stroke-dashoffset: 0; opacity: 1; }
-  85%  { stroke-dashoffset: 0; opacity: 0.4; }
-  100% { stroke-dashoffset: -800; opacity: 0; }
-}
-
-/* ============================================================ */
-/* Boot terminal — typewriter feel */
-/* ============================================================ */
-.boot-line {
-  opacity: 0;
-  animation: bootIn 0.25s ease-out forwards;
-}
-
-@keyframes bootIn {
-  0% { opacity: 0; transform: translateY(2px); }
-  100% { opacity: 1; transform: translateY(0); }
-}
-
-/* ============================================================ */
-/* Cursor blink */
-/* ============================================================ */
-.cursor-blink::after {
-  content: '▍';
-  margin-left: 4px;
-  color: var(--vital);
-  animation: cursor 1.05s steps(1) infinite;
-}
-
-.cursor-mono::after {
-  content: '_';
-  margin-left: 2px;
-  color: var(--vital);
-  animation: cursor 1.05s steps(1) infinite;
-}
-
-/* ============================================================ */
-/* Scrolling event log */
-/* ============================================================ */
-.event-log-entry {
-  animation: logEntry 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-@keyframes logEntry {
-  0% { opacity: 0; transform: translateX(-8px); }
-  100% { opacity: 1; transform: translateX(0); }
-}
-
-/* ============================================================ */
-/* Tabular alignment for monospace numbers */
+/* Tabular alignment for numbers */
 /* ============================================================ */
 .tabular {
   font-variant-numeric: tabular-nums;
   font-feature-settings: 'tnum';
 }
 
-/* ============================================================ */
-/* Status dot */
-/* ============================================================ */
-.status-dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--vital);
-  box-shadow: 0 0 6px var(--vital);
-  animation: pulseSlow 2.6s ease-in-out infinite;
-}
-
-.status-dot-amber {
-  background: var(--amber);
-  box-shadow: 0 0 6px var(--amber);
-}
-
-@keyframes pulseSlow {
-  0%, 100% { opacity: 0.45; }
-  50% { opacity: 1; }
+/* Ligatures in display headlines */
+.display {
+  font-feature-settings: 'liga' 1, 'dlig' 1, 'kern' 1, 'ss01' 1;
 }
 
 /* ============================================================ */
-/* Corner brackets — console framing */
+/* Editorial underline — animated on hover */
 /* ============================================================ */
-.bracket {
+.editorial-link {
   position: relative;
+  display: inline-block;
 }
-
-.bracket::before,
-.bracket::after,
-.bracket > .bl,
-.bracket > .br {
+.editorial-link::after {
   content: '';
   position: absolute;
-  width: 8px;
-  height: 8px;
-  border-color: rgba(234, 230, 221, 0.35);
-  pointer-events: none;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1.5px;
+  background: var(--terra);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
-
-.bracket::before {
-  top: 0; left: 0;
-  border-top: 1px solid;
-  border-left: 1px solid;
-}
-.bracket::after {
-  top: 0; right: 0;
-  border-top: 1px solid;
-  border-right: 1px solid;
-}
-.bracket > .bl {
-  bottom: 0; left: 0;
-  border-bottom: 1px solid;
-  border-left: 1px solid;
-}
-.bracket > .br {
-  bottom: 0; right: 0;
-  border-bottom: 1px solid;
-  border-right: 1px solid;
-}
-
-.bracket-vital::before,
-.bracket-vital::after,
-.bracket-vital > .bl,
-.bracket-vital > .br {
-  border-color: var(--vital);
+.editorial-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
 }
 
 /* ============================================================ */
-/* Vital glow underline */
+/* Marquee for the hero ribbon */
 /* ============================================================ */
-.vital-underline {
-  background-image: linear-gradient(transparent calc(100% - 2px), var(--vital) 2px);
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: marquee 40s linear infinite;
+  display: flex;
+  gap: 4rem;
+  padding-right: 4rem;
+  width: max-content;
+}
+
+.marquee-pause:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* ============================================================ */
+/* Number reveal — used for the big metric panels */
+/* ============================================================ */
+@keyframes numShine {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+.num-shine {
+  background: linear-gradient(
+    90deg,
+    var(--ink) 0%,
+    var(--ink) 35%,
+    var(--terra) 50%,
+    var(--ink) 65%,
+    var(--ink) 100%
+  );
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: numShine 4s ease-in-out infinite;
+}
+
+/* ============================================================ */
+/* Stamps and seals — editorial details */
+/* ============================================================ */
+.stamp {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.stamp-terra {
+  border-color: var(--terra);
+  color: var(--terra);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--moss);
+  box-shadow: 0 0 0 0 rgba(92, 117, 68, 0.6);
+  animation: dot-pulse 2.4s ease-in-out infinite;
+}
+@keyframes dot-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(92, 117, 68, 0.4); }
+  50% { box-shadow: 0 0 0 6px rgba(92, 117, 68, 0); }
 }
 
 /* ============================================================ */
 /* Custom scrollbar */
 /* ============================================================ */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--paper-warm); }
 ::-webkit-scrollbar-thumb {
-  background: rgba(234, 230, 221, 0.08);
-  border-radius: 3px;
+  background: rgba(26, 24, 21, 0.18);
+  border: 2px solid var(--paper-warm);
+  border-radius: 999px;
 }
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(124, 255, 183, 0.3);
-}
+::-webkit-scrollbar-thumb:hover { background: var(--terra); }
 
 /* ============================================================ */
 /* Reduced motion */
 /* ============================================================ */
 @media (prefers-reduced-motion: reduce) {
-  .ekg-line { animation: none; opacity: 1; stroke-dashoffset: 0; }
-  .status-dot { animation: none; opacity: 1; }
-  .cursor-blink::after { animation: none; opacity: 1; }
-  .cursor-mono::after { animation: none; opacity: 1; }
+  html { scroll-behavior: auto; }
+  .marquee-track { animation: none; }
+  .dot { animation: none; }
+  .num-shine { animation: none; -webkit-text-fill-color: var(--ink); }
 }
 
 :focus:not(:focus-visible) { outline: none; }
 :focus-visible {
-  outline: 1px solid var(--vital);
-  outline-offset: 2px;
+  outline: 2px solid var(--terra);
+  outline-offset: 4px;
+  border-radius: 2px;
 }
 
-/* Subtle CRT flicker on the whole console — very gentle */
-@keyframes crt-flicker {
-  0%, 100% { opacity: 1; }
-  98% { opacity: 1; }
-  98.5% { opacity: 0.96; }
-  99% { opacity: 1; }
+/* ============================================================ */
+/* Edge guides — subtle margin marks like a notebook */
+/* ============================================================ */
+.edge-guide {
+  position: relative;
+}
+.edge-guide::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(184, 84, 59, 0.4) 50%,
+    transparent 100%
+  );
 }
 
-.crt {
-  animation: crt-flicker 8s ease-in-out infinite;
-}
-
-/* Glitch shimmer on key text reveals */
-@keyframes glitch-text {
-  0%, 100% { text-shadow: none; }
-  10% { text-shadow: 1px 0 var(--vital); }
-  10.5% { text-shadow: -1px 0 var(--amber); }
-  11% { text-shadow: none; }
-}
-
-.glitch-once {
-  animation: glitch-text 0.6s ease-out;
+/* Section number — large faded numerals */
+.section-num {
+  font-feature-settings: 'tnum', 'lnum';
+  color: var(--terra);
+  opacity: 0.18;
 }

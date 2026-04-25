@@ -1,6 +1,6 @@
-import { cases } from '@/lib/data';
-import { CaseFilePage } from '@/components/case-file-page';
+import { cases, CaseFile } from '@/lib/data';
 import { notFound } from 'next/navigation';
+import { CaseDetail } from '@/components/case-detail';
 
 export function generateStaticParams() {
   return cases.map((c) => ({ slug: c.slug }));
@@ -13,14 +13,14 @@ export async function generateMetadata({
 }) {
   const { slug } = await params;
   const c = cases.find((x) => x.slug === slug);
-  if (!c) return { title: 'Module Not Found · AETHER' };
+  if (!c) return { title: 'Case Not Found' };
   return {
-    title: `${c.patient} · AETHER`,
+    title: `${c.patient} — Musharraf Shaik`,
     description: c.symptom,
   };
 }
 
-export default async function ProjectPage({
+export default async function CasePage({
   params,
 }: {
   params: Promise<{ slug: string }>;
@@ -28,6 +28,6 @@ export default async function ProjectPage({
   const { slug } = await params;
   const idx = cases.findIndex((x) => x.slug === slug);
   if (idx === -1) notFound();
-  const c = cases[idx]!;
-  return <CaseFilePage c={c} />;
+  const c: CaseFile = cases[idx]!;
+  return <CaseDetail c={c} />;
 }

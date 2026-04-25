@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
+import { useInView } from './use-in-view';
 
 type Parsed = { num: number; prefix: string; suffix: string };
 
@@ -14,7 +15,7 @@ function parseValue(value: string): Parsed | null {
 
 export function Counter({
   value,
-  duration = 1100,
+  duration = 1500,
   delay = 0,
   className = '',
 }: {
@@ -23,16 +24,17 @@ export function Counter({
   delay?: number;
   className?: string;
 }) {
+  const { ref, inView } = useInView<HTMLSpanElement>();
   const parsed = useMemo(() => parseValue(value), [value]);
   const [display, setDisplay] = useState<string>(() =>
     parsed ? `${parsed.prefix}0${parsed.suffix}` : value
   );
+  const startedRef = useRef(false);
 
   useEffect(() => {
-    if (!parsed) {
-      setDisplay(value);
-      return;
-    }
+    if (!inView || !parsed || startedRef.current) return;
+    startedRef.current = true;
+
     let raf = 0;
     let startTs = 0;
     const target = parsed.num;
@@ -46,7 +48,8 @@ export function Counter({
         return;
       }
       const t = Math.min(1, (elapsed - delay) / duration);
-      const eased = 1 - Math.pow(1 - t, 3);
+      // easeOutExpo for satisfying landing
+      const eased = t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
       const cur = target * eased;
       const formatted = decimals > 0 ? cur.toFixed(decimals) : Math.round(cur).toString();
       setDisplay(`${parsed.prefix}${formatted}${parsed.suffix}`);
@@ -58,7 +61,11 @@ export function Counter({
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [parsed, value, duration, delay]);
+  }, [inView, parsed, duration, delay]);
 
-  return <span className={`tabular ${className}`}>{display}</span>;
+  return (
+    <span ref={ref} className={`tabular ${className}`}>
+      {display}
+    </span>
+  );
 }
