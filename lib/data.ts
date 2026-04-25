@@ -264,7 +264,6 @@ export const projects: Project[] = [
 
 export const profile = {
   name: 'Musharraf Shaik',
-  alias: 'Athreya',
   role: 'Data-Driven B2B Marketing Strategist',
   tagline: "I don't just market. I engineer revenue.",
   thesis: 'The Architecture of Intent',

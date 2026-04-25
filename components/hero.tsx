@@ -35,7 +35,7 @@ function ParticleField({ organize }: { organize: number }) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
 
     const resize = () => {
       const w = canvas.clientWidth;
@@ -48,7 +48,7 @@ function ParticleField({ organize }: { organize: number }) {
     };
 
     const seed = (w: number, h: number) => {
-      const count = Math.min(280, Math.floor((w * h) / 5500));
+      const count = Math.min(110, Math.floor((w * h) / 11000));
       const arr: Particle[] = [];
 
       // Funnel target shape: a top-down narrowing trapezoid (the marketing funnel)
@@ -162,22 +162,6 @@ function ParticleField({ organize }: { organize: number }) {
         ctx.fill();
 
         // Connector lines once organized (between adjacent particles in same row)
-        if (easeO > 0.5 && i % 4 === 0 && i + 1 < particles.length) {
-          const next = particles[i + 1];
-          const nx = next.cx * (1 - easeO) + next.ox * easeO;
-          const ny = next.cy * (1 - easeO) + next.oy * easeO;
-          const dx = nx - x;
-          const dy = ny - y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 90) {
-            ctx.strokeStyle = `rgba(91, 233, 233, ${0.15 * (easeO - 0.5) * 2 * (1 - dist / 90)})`;
-            ctx.lineWidth = 0.5;
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            ctx.lineTo(nx, ny);
-            ctx.stroke();
-          }
-        }
       }
 
       rafRef.current = requestAnimationFrame(draw);
@@ -290,7 +274,7 @@ export function Hero() {
         {/* Top schematic readouts */}
         <div className="absolute inset-x-6 top-24 flex items-center justify-between font-mono text-[9px] uppercase tracking-[0.25em] text-bone-deep md:inset-x-10 md:top-28">
           <span>FIG. 001 — RAW SIGNAL FIELD</span>
-          <span className="hidden md:inline">N = 280 / FRAME ∂T = 16.6MS</span>
+          <span className="hidden md:inline">N = 110 / FRAME ∂T = 16.6MS</span>
           <span className="tabular text-signal/60">
             ORGANIZE: {(organizeValue * 100).toFixed(1)}%
           </span>
@@ -366,9 +350,6 @@ export function Hero() {
                   style={{ x: sx, y: sy }}
                 >
                   <span className="text-shimmer">{profile.name}</span>
-                  <span className="ml-3 font-sans text-base not-italic text-bone-dim md:text-lg">
-                    ({profile.alias})
-                  </span>
                 </motion.span>
                 <div className="mt-3 font-mono text-[11px] uppercase tracking-[0.22em] text-bone-dim">
                   {profile.role}
@@ -448,10 +429,10 @@ function ParticleFieldFixed({ organize }: { organize: number }) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
 
     const seed = (w: number, h: number) => {
-      const count = Math.min(280, Math.floor((w * h) / 5500));
+      const count = Math.min(110, Math.floor((w * h) / 11000));
       const arr: Particle[] = [];
       const stages = 4;
       const stageHeight = h / (stages + 1);
@@ -540,23 +521,6 @@ function ParticleFieldFixed({ organize }: { organize: number }) {
         ctx.beginPath();
         ctx.arc(x, y, p.size * (1 + easeO * 0.3), 0, Math.PI * 2);
         ctx.fill();
-
-        if (easeO > 0.5 && i % 4 === 0 && i + 1 < particles.length) {
-          const next = particles[i + 1];
-          const nx = next.cx * (1 - easeO) + next.ox * easeO;
-          const ny = next.cy * (1 - easeO) + next.oy * easeO;
-          const dx = nx - x;
-          const dy = ny - y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 90) {
-            ctx.strokeStyle = `rgba(91, 233, 233, ${0.15 * (easeO - 0.5) * 2 * (1 - dist / 90)})`;
-            ctx.lineWidth = 0.5;
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            ctx.lineTo(nx, ny);
-            ctx.stroke();
-          }
-        }
       }
 
       raf = requestAnimationFrame(draw);
